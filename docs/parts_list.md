@@ -36,7 +36,7 @@ All prices are in US dollars for one unit. The **Confirmed** column says how the
 
 ## Filament
 
-The printed parts need about 1.9 kg of PETG or PLA (see `cad/manifest.json` for volumes). Filament is not in the 100 dollar parts total. PETG is better for the duct because it is tougher and holds the flanges flat. PLA is fine for the balance parts.
+The printed parts have a solid volume of 2.45 litres (`cad/manifest.json`). Sliced with 3 walls and 15 % infill, expect about 2.5 kg of PETG, roughly 50 dollars. The honeycomb (0.4 kg) can be replaced by drinking straws. Filament is not in the 100 dollar parts total. PETG is better for the duct because it is tougher and holds the flanges flat. PLA is fine for the balance parts.
 
 ## Upgrade options
 

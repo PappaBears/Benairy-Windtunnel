@@ -26,7 +26,7 @@ Operator: an aerospace test engineer who prints at home. Job: measure lift and d
 | 100 g drag cell, 200 g lift cell | 0.01 g drag resolution for 1.5 gf of car drag; the lift cell carries 90 g of platform and car. |
 | SDP810-125Pa instead of a cheap analog sensor | 0.01 Pa resolution and low drift; q is the largest error term, so it gets the best sensor. The MPXV7002 supply chain is unreliable. |
 | HTTP polling, no WebSocket library | No external firmware dependencies; 10 SPS data does not need more. |
-| 2 mm duct walls, arch stands | Keeps the filament near 1.9 kg. |
+| 2 mm duct walls, arch stands | Keeps the filament near 2.5 kg. |
 
 ## Current reality (7 November 2026)
 
