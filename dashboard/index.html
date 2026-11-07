@@ -123,6 +123,10 @@ details summary{cursor:pointer;color:var(--muted);font-size:12px;text-transform:
   <div class="row" style="margin-top:12px"><label>Lighting</label><button id="btn_light">Light on</button><button id="btn_light_off">Light off</button>
     <label>Brightness</label><input type="range" id="led_b" min="5" max="100" value="40" style="width:140px"><span id="led_b_v" style="min-width:36px">40 %</span></div>
   <div class="strip" id="strip" title="Light bar colours: cyan running, amber sweep progress, red fault, white tare"></div>
+  <div id="demo_panel" hidden style="margin-top:12px;padding:10px 12px;border-radius:10px;background:#3a2e12;border:1px solid #6a5420">
+    <div style="font-size:12px;color:var(--amber);font-weight:600;margin-bottom:6px">Simulation running in this page. No hardware connected. Data is simulated.</div>
+    <div class="row" style="margin:0"><button id="demo_estop">Open the stop loop</button><button id="demo_estop_close">Close the stop loop</button><button id="demo_fanfail">Fan stall</button><button id="demo_fanok">Fan OK</button></div>
+  </div>
   <p style="color:var(--muted);font-size:12px;margin:8px 0 0">Do the tare with the fan off and the model installed. Set the angle zero with the zero gauge against the strut.</p>
 </section>
 
@@ -138,7 +142,8 @@ details summary{cursor:pointer;color:var(--muted);font-size:12px;text-transform:
   <div class="row"><label>Run</label><input type="text" id="run_name" value="run" style="width:90px"><label>Model</label><input type="text" id="model_name" value="naca0012">
     <label>S</label><input type="number" id="ref_area" value="0.0028" step="0.0001" style="width:90px"><label>m²</label>
     <label>Chord</label><input type="number" id="ref_chord" value="0.035" step="0.001" style="width:80px"><label>m</label></div>
-  <div class="row"><button id="btn_csv">⬇ Sweep CSV</button><button id="btn_live_csv">⬇ Live log CSV</button></div>
+  <div class="row"><button id="btn_csv">⬇ Sweep CSV</button><button id="btn_live_csv">⬇ Live log CSV</button><button id="btn_copy_csv" hidden>Copy CSV</button></div>
+  <textarea id="csv_box" hidden style="width:100%;height:110px;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:8px;font:11px/1.4 ui-monospace,Menlo,monospace;padding:8px" readonly></textarea>
 </section>
 
 <section class="span">
@@ -158,6 +163,9 @@ details summary{cursor:pointer;color:var(--muted);font-size:12px;text-transform:
 <section class="span"><h2>Log</h2><div class="log" id="log"></div></section>
 </main>
 <footer><b>Benairy</b> wind tunnel · Schreiber AI · firmware <span id="fw">?</span></footer>
+<script>
+/*DEMO_SIM*/
+</script>
 <script>
 (function(){
 const $=id=>document.getElementById(id);
@@ -237,7 +245,9 @@ async function loadSweep(){
     if(p.q_pa>0){p1.push([p.aoa_deg,cl,p.lift_sd/(p.q_pa*S)]);p2.push([cd,cl]);}});
   plotXY('polar1',p1,'α (deg)','CL');plotXY('polar2',p2,'CD','CL');
 }
-function download(name,text){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'text/csv'}));a.download=name;a.click();exported=true;steps();}
+function download(name,text){lastCsv=text;$('csv_box').hidden=false;$('btn_copy_csv').hidden=false;$('csv_box').value=text;try{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'text/csv'}));a.download=name;a.click();}catch(e){}exported=true;steps();log('CSV ready: '+name+' ('+text.split('\n').length+' lines). If the download did not start, use Copy CSV.');}
+let lastCsv='';
+$('btn_copy_csv').onclick=()=>{navigator.clipboard.writeText(lastCsv).then(()=>log('CSV copied to the clipboard.')).catch(()=>{$('csv_box').select();log('Select the text box and copy it.');});};
 function meta(){const d=new Date().toISOString();return `# benairy_sweep_csv,1\n# run,${$('run_name').value}\n# model,${$('model_name').value}\n# ref_area_m2,${$('ref_area').value}\n# ref_chord_m,${$('ref_chord').value}\n# exported,${d}\n# source,${$('simtag').style.display==='none'?'hardware':'simulation'}\n`;}
 $('btn_csv').onclick=async()=>{const r=await fetch('/api/sweep.csv');download(`${$('run_name').value}_${$('model_name').value}_${Date.now()}.csv`,meta()+await r.text());};
 $('btn_live_csv').onclick=()=>{let t='seq,t_ms,lift_n,drag_n,q_pa,aoa_deg,fan_rpm\n';for(const s of liveLog)t+=`${s.seq},${s.t_ms},${s.lift_n},${s.drag_n},${s.q_pa},${s.aoa_deg},${s.fan_rpm}\n`;download(`live_${Date.now()}.csv`,meta()+t);};
@@ -259,7 +269,11 @@ async function loadCfg(){const r=await fetch('/api/config');const c=await r.json
   for(const k of Object.keys(c)){const d=document.createElement('div');d.innerHTML=`<label>${k}</label><br><input type="number" step="any" value="${c[k]}" id="cfg_${k}"> <button data-k="${k}">Save</button>`;g.appendChild(d);
     d.querySelector('button').onclick=async()=>{await cmd({cmd:'set',key:k,value:$('cfg_'+k).value},'set '+k);};}}
 $('btn_cfg_reload').onclick=loadCfg;
-fetch('/api/info').then(r=>r.json()).then(i=>{$('fw').textContent=i.fw+(i.sim?' (simulation)':'');if(i.sim)$('simtag').style.display='';}).catch(()=>{});
+function enableDemo(){if(!window.BenairyDemo||window.BenairyDemo.active())return;window.BenairyDemo.start();$('demo_panel').hidden=false;$('simtag').style.display='';$('fw').textContent='browser simulation';log('No controller found. The page runs its own simulation of the tunnel.','warn');
+  $('demo_estop').onclick=()=>window.BenairyDemo.inject('estop',1);$('demo_estop_close').onclick=()=>window.BenairyDemo.inject('estop',0);
+  $('demo_fanfail').onclick=()=>window.BenairyDemo.inject('fan_fail',1);$('demo_fanok').onclick=()=>window.BenairyDemo.inject('fan_fail',0);}
+const wantDemo=location.hash==='#demo'||location.protocol==='file:';
+if(wantDemo){enableDemo();}else{fetch('/api/info',{signal:AbortSignal.timeout(2500)}).then(r=>{if(!r.ok)throw 0;return r.json();}).then(i=>{$('fw').textContent=i.fw+(i.sim?' (simulation)':'');if(i.sim)$('simtag').style.display='';}).catch(()=>enableDemo());}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')cmd({cmd:'stop'},'STOP (Esc)');});
 window.addEventListener('resize',()=>{drawChart();loadSweep();});
 loadCfg();loadSweep();poll();steps();log('Dashboard ready. Esc stops the fan.');

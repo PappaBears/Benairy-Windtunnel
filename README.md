@@ -23,12 +23,16 @@ Print the duct, stands, and bay in graphite or dark grey PETG. Print the bellmou
 
 ## Try it without hardware
 
+Fastest: open `dashboard/standalone.html` in a browser. It runs its own simulation of the tunnel in the page, with the same controls, sweeps, light bars, and fault injection. No install.
+
+With the Python simulator (same HTTP API as the ESP32, used by the tests):
+
 ```bash
 pip install numpy scipy matplotlib
 python3 sim/server.py --port 8080
 ```
 
-Open `http://localhost:8080`. Press **Tare**, then **Start sweep**. Download the CSV and analyze it:
+Open `http://localhost:8080`. Press **Set angle zero**, **Tare**, then **Start sweep**. Download the CSV and analyze it:
 
 ```bash
 python3 tools/analyze.py --run data/examples/sim_wing_run.csv --tare data/examples/sim_wing_tare.csv --out out

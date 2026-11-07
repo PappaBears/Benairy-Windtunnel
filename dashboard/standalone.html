@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Benairy Control</title>
+<style>
+:root{--bg:#0B1018;--panel:#152234;--panel2:#0F1A2A;--line:#223349;--text:#EDF4FF;--muted:#9FB3C8;--cyan:#66E3FF;--amber:#FFC66D;--red:#FF707D;--green:#7CE38B;--violet:#B8A1FF}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 Inter,system-ui,Segoe UI,Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+header{position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:14px;padding:10px 20px;background:linear-gradient(180deg,#152234,#111c2c);border-bottom:1px solid var(--line)}
+.logo{display:flex;align-items:center;gap:10px}
+.logo svg{width:30px;height:30px}
+.logo h1{font-size:17px;margin:0;letter-spacing:.4px;font-weight:700}
+.logo small{display:block;font-size:11px;color:var(--muted);font-weight:400;letter-spacing:.2px}
+.spacer{flex:1}
+.pill{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:12px;letter-spacing:.5px;padding:6px 12px;border-radius:999px;background:#1b2d47;border:1px solid var(--line)}
+.pill .dot{width:8px;height:8px;border-radius:50%;background:var(--muted)}
+.pill.RUNNING .dot,.pill.SWEEP .dot{background:var(--green);box-shadow:0 0 0 4px rgba(124,227,139,.18);animation:pulse 1.4s infinite}
+.pill.RUNNING,.pill.SWEEP{color:var(--green)}
+.pill.FAULT{color:var(--red);background:#3a1a22}.pill.FAULT .dot{background:var(--red)}
+.pill.SIM{color:var(--amber);background:#3a2e12}.pill.SIM .dot{background:var(--amber)}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(124,227,139,.35)}70%{box-shadow:0 0 0 7px rgba(124,227,139,0)}100%{box-shadow:0 0 0 0 rgba(124,227,139,0)}}
+@media (prefers-reduced-motion:reduce){.pill .dot{animation:none}}
+#banner{display:none;margin:12px 20px 0;padding:10px 14px;border-radius:10px;background:#3a1a22;border:1px solid #6b2a36;color:#ffd3d8;font-weight:600}
+#banner.on{display:flex;align-items:center;gap:12px}
+#banner button{margin-left:auto}
+main{display:grid;grid-template-columns:1.25fr 1fr;gap:14px;padding:14px 20px;max-width:1540px;margin:0 auto}
+@media (max-width:980px){main{grid-template-columns:1fr}}
+.span{grid-column:1/-1}
+section{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:0 1px 0 rgba(255,255,255,.03) inset}
+section h2{font-size:11px;text-transform:uppercase;letter-spacing:.9px;color:var(--muted);margin:0 0 12px;display:flex;align-items:center;gap:8px}
+section h2 .hint{margin-left:auto;text-transform:none;letter-spacing:0;font-weight:400;font-size:11px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:8px}
+.tile{background:var(--panel2);border-radius:10px;padding:9px 11px;border:1px solid transparent}
+.tile.hi{border-color:#1f4a5a}
+.tile .k{font-size:11px;color:var(--muted);white-space:nowrap}
+.tile .v{font-size:22px;font-variant-numeric:tabular-nums;font-weight:600;line-height:1.2;margin-top:2px}
+.tile .u{font-size:11px;color:var(--muted);margin-left:3px;font-weight:400}
+.steps{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 12px}
+.step{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:8px;background:var(--panel2);font-size:12px;color:var(--muted);border:1px solid transparent}
+.step b{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;background:#1b2d47;color:var(--muted);font-size:11px}
+.step.done{color:var(--green)}.step.done b{background:#17422f;color:var(--green)}
+.step.now{border-color:#1f4a5a;color:var(--cyan)}.step.now b{background:#0f5566;color:var(--cyan)}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0}
+label{color:var(--muted);font-size:12px}
+input[type=number],input[type=text]{background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:7px 9px;width:108px;font:inherit}
+input[type=text].wide{width:280px}
+input:focus{outline:2px solid #1f6f84;outline-offset:1px}
+input[type=range]{width:220px;accent-color:var(--cyan)}
+button{background:#1e3350;color:var(--text);border:1px solid #2c4568;border-radius:8px;padding:8px 13px;cursor:pointer;font-weight:600;font:inherit;font-weight:600;transition:background .12s}
+button:hover{background:#27416a}
+button:disabled{opacity:.45;cursor:not-allowed}
+button.stop{background:#8a2634;border-color:#b23b4c;font-size:15px;padding:11px 20px;letter-spacing:.4px}
+button.stop:hover{background:#a12d3d}
+button.primary{background:#0f5566;border-color:#1a7d94;color:var(--cyan)}
+button.primary:hover{background:#13677c}
+canvas{width:100%;background:var(--panel2);border-radius:10px;display:block}
+table{width:100%;border-collapse:collapse;font-size:12px;font-variant-numeric:tabular-nums}
+th,td{padding:5px 7px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+th{color:var(--muted);font-weight:500;position:sticky;top:0;background:var(--panel)}
+td:first-child,th:first-child{text-align:left}
+.log{height:130px;overflow:auto;background:var(--panel2);border-radius:10px;padding:8px 10px;font:12px/1.5 ui-monospace,Menlo,monospace;color:var(--muted)}
+.fault{color:var(--red);font-weight:600}.ok{color:var(--green)}.warn{color:var(--amber)}
+.progress{height:6px;background:var(--panel2);border-radius:3px;overflow:hidden;margin:8px 0}
+.progress div{height:100%;background:linear-gradient(90deg,#1a7d94,var(--cyan));width:0;transition:width .3s}
+footer{color:var(--muted);font-size:11px;text-align:center;padding:14px}
+footer b{color:var(--cyan);font-weight:600}
+details summary{cursor:pointer;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.9px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px;margin-top:10px}
+.grid3 div{background:var(--panel2);border-radius:8px;padding:8px}
+.grid3 input{width:120px}
+.legend{display:flex;gap:14px;font-size:12px;color:var(--muted);margin-top:6px;align-items:center}
+.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:6px;vertical-align:middle}
+.kbd{font:11px ui-monospace,Menlo,monospace;background:#1b2d47;border:1px solid var(--line);border-radius:4px;padding:1px 5px;color:var(--muted)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.strip{display:grid;grid-template-columns:repeat(24,1fr);gap:3px;margin:8px 0 2px;padding:6px;background:var(--panel2);border-radius:8px}
+.strip i{display:block;height:10px;border-radius:3px;background:#1b2d47;box-shadow:0 0 6px 0 transparent;transition:background .15s,box-shadow .15s}
+@media (max-width:700px){.two{grid-template-columns:1fr}input[type=text].wide{width:100%}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">
+    <svg viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#66E3FF"/><stop offset="1" stop-color="#1a7d94"/></linearGradient></defs><path d="M3 11h26v10H3z" fill="none" stroke="url(#g)" stroke-width="2"/><path d="M3 11 L1 7h30l-2 4M3 21l-2 4h30l-2-4" fill="none" stroke="url(#g)" stroke-width="1.5"/><path d="M8 16h12m-3-3 3 3-3 3" fill="none" stroke="#EDF4FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <h1>Benairy<small>Desktop wind tunnel · Schreiber AI</small></h1>
+  </div>
+  <div class="spacer"></div>
+  <span id="simtag" class="pill SIM" style="display:none"><span class="dot"></span>SIMULATION</span>
+  <span id="state" class="pill"><span class="dot"></span><span id="state_t">CONNECTING</span></span>
+</header>
+<div id="banner"><span>⚠</span><span id="banner_t"></span><button id="banner_clear">Clear faults</button></div>
+<main>
+<section class="span">
+  <h2>Live data <span class="hint" id="conn"></span></h2>
+  <div class="steps">
+    <span class="step" id="st1"><b>1</b>Connect</span><span class="step" id="st2"><b>2</b>Angle zero</span><span class="step" id="st3"><b>3</b>Tare, wind off</span><span class="step" id="st4"><b>4</b>Sweep</span><span class="step" id="st5"><b>5</b>Export CSV</span>
+  </div>
+  <div class="tiles">
+    <div class="tile hi"><div class="k">Airspeed</div><div class="v"><span id="v_ms">–</span><span class="u">m/s</span></div></div>
+    <div class="tile hi"><div class="k">Dynamic pressure q</div><div class="v"><span id="q_pa">–</span><span class="u">Pa</span></div></div>
+    <div class="tile hi"><div class="k">Lift</div><div class="v"><span id="lift_mn">–</span><span class="u">mN</span></div></div>
+    <div class="tile hi"><div class="k">Drag</div><div class="v"><span id="drag_mn">–</span><span class="u">mN</span></div></div>
+    <div class="tile hi"><div class="k">Angle of attack</div><div class="v"><span id="aoa_deg">–</span><span class="u">deg</span></div></div>
+    <div class="tile"><div class="k">Fan</div><div class="v"><span id="fan_rpm">–</span><span class="u">rpm</span></div></div>
+    <div class="tile"><div class="k">Fan output</div><div class="v"><span id="fan_out">–</span><span class="u">%</span></div></div>
+    <div class="tile"><div class="k">Air temperature</div><div class="v"><span id="temp_c">–</span><span class="u">°C</span></div></div>
+    <div class="tile"><div class="k">Air density</div><div class="v"><span id="rho">–</span><span class="u">kg/m³</span></div></div>
+    <div class="tile"><div class="k">Supply</div><div class="v"><span id="vbus">–</span><span class="u">V</span></div></div>
+    <div class="tile"><div class="k">Tare</div><div class="v" id="tared" style="font-size:16px">–</div></div>
+    <div class="tile"><div class="k">Faults</div><div class="v" id="faults" style="font-size:14px">–</div></div>
+  </div>
+  <canvas id="chart" height="260" style="margin-top:10px"></canvas>
+  <div class="legend"><span><i style="background:#66E3FF"></i>lift mN</span><span><i style="background:#FFC66D"></i>drag mN</span><span><i style="background:#B8A1FF"></i>q Pa</span><span style="margin-left:auto"><label><input type="checkbox" id="smooth" checked> 1 s average</label></span></div>
+</section>
+
+<section>
+  <h2>Manual control <span class="hint"><span class="kbd">Esc</span> stops the fan</span></h2>
+  <div class="row"><button class="stop" id="btn_stop">■ STOP FAN</button><button id="btn_clear">Clear faults</button></div>
+  <div class="row"><label>Fan</label><input type="range" id="fan_slider" min="0" max="100" value="0"><span id="fan_slider_v" style="min-width:40px">0 %</span><button id="btn_fan" class="primary">Set fan</button></div>
+  <div class="row"><label>Angle of attack</label><input type="number" id="aoa_in" value="0" step="0.5"><label>deg</label><button id="btn_aoa">Set angle</button></div>
+  <div class="row"><button id="btn_tare" class="primary">Tare, wind off</button><button id="btn_zero">Set angle zero</button></div>
+  <div class="row" style="margin-top:12px"><label>Lighting</label><button id="btn_light">Light on</button><button id="btn_light_off">Light off</button>
+    <label>Brightness</label><input type="range" id="led_b" min="5" max="100" value="40" style="width:140px"><span id="led_b_v" style="min-width:36px">40 %</span></div>
+  <div class="strip" id="strip" title="Light bar colours: cyan running, amber sweep progress, red fault, white tare"></div>
+  <div id="demo_panel" hidden style="margin-top:12px;padding:10px 12px;border-radius:10px;background:#3a2e12;border:1px solid #6a5420">
+    <div style="font-size:12px;color:var(--amber);font-weight:600;margin-bottom:6px">Simulation running in this page. No hardware connected. Data is simulated.</div>
+    <div class="row" style="margin:0"><button id="demo_estop">Open the stop loop</button><button id="demo_estop_close">Close the stop loop</button><button id="demo_fanfail">Fan stall</button><button id="demo_fanok">Fan OK</button></div>
+  </div>
+  <p style="color:var(--muted);font-size:12px;margin:8px 0 0">Do the tare with the fan off and the model installed. Set the angle zero with the zero gauge against the strut.</p>
+</section>
+
+<section>
+  <h2>Automated sweep</h2>
+  <div class="row"><label>Angles (deg)</label><input type="text" class="wide" id="sw_list" value="-6,-4,-2,0,2,4,6,8,10,12,14"></div>
+  <div class="row"><label>Fan</label><input type="number" id="sw_fan" value="80" min="0" max="100" step="5"><label>% · 0 = wind-off tare sweep</label></div>
+  <div class="row"><label>Settle</label><input type="number" id="sw_settle" value="3" step="0.5" style="width:70px"><label>s</label>
+    <label>Samples</label><input type="number" id="sw_samples" value="40" step="10" style="width:70px"><label>per point</label>
+    <label><input type="checkbox" id="sw_updown"> up and down</label></div>
+  <div class="row"><button id="btn_sweep" class="primary">▶ Start sweep</button><button id="btn_sweep_stop">Stop sweep</button><span id="sw_status" style="color:var(--muted);font-size:12px"></span></div>
+  <div class="progress"><div id="sw_bar"></div></div>
+  <div class="row"><label>Run</label><input type="text" id="run_name" value="run" style="width:90px"><label>Model</label><input type="text" id="model_name" value="naca0012">
+    <label>S</label><input type="number" id="ref_area" value="0.0028" step="0.0001" style="width:90px"><label>m²</label>
+    <label>Chord</label><input type="number" id="ref_chord" value="0.035" step="0.001" style="width:80px"><label>m</label></div>
+  <div class="row"><button id="btn_csv">⬇ Sweep CSV</button><button id="btn_live_csv">⬇ Live log CSV</button><button id="btn_copy_csv" hidden>Copy CSV</button></div>
+  <textarea id="csv_box" hidden style="width:100%;height:110px;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:8px;font:11px/1.4 ui-monospace,Menlo,monospace;padding:8px" readonly></textarea>
+</section>
+
+<section class="span">
+  <h2>Sweep results <span class="hint">raw coefficients: no tare subtraction, no wall correction · use tools/analyze.py for corrected polars with uncertainty</span></h2>
+  <div class="two"><canvas id="polar1" height="230"></canvas><canvas id="polar2" height="230"></canvas></div>
+  <div style="max-height:260px;overflow:auto;margin-top:10px"><table id="sw_table"><thead><tr>
+    <th>#</th><th>α cmd</th><th>α meas</th><th>q Pa</th><th>V m/s</th><th>Lift mN</th><th>±</th><th>Drag mN</th><th>±</th><th>CL</th><th>CD</th><th>n</th></tr></thead><tbody></tbody></table></div>
+</section>
+
+<section class="span">
+  <details><summary>Settings, stored on the controller</summary>
+  <div class="grid3" id="cfg"></div>
+  <div class="row"><button id="btn_cfg_reload">Reload</button></div>
+  </details>
+</section>
+
+<section class="span"><h2>Log</h2><div class="log" id="log"></div></section>
+</main>
+<footer><b>Benairy</b> wind tunnel · Schreiber AI · firmware <span id="fw">?</span></footer>
+<script>
+/* Benairy in-browser simulator. Mirrors sim/server.py so the dashboard runs with no
+   server at all: it replaces window.fetch for /api/... paths when the real API is
+   unreachable (or when the page is opened with #demo). Demo data is simulated. */
+(function(){
+const q0=50.0, S=0.0028, CLA=0.075, CLMAX=0.85, CD0=0.030, EAR=0.9*Math.PI*2.29, STRUT=0.08*0.0045*0.050, NPC=1e-6, CROSS=0.02;
+const C=0.01, DELTA=0.137, TAU1=0.87;
+let rnd=(function(s){return function(){s=(s*1664525+1013904223)%4294967296;return s/4294967296;};})(7);
+const gauss=(sd)=>{let u=1-rnd(),v=rnd();return sd*Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);};
+function coeff(a){let cl=CLA*a;if(Math.abs(cl)>CLMAX)cl=Math.sign(cl)*(CLMAX-0.02*(Math.abs(a)-CLMAX/CLA));return [cl,CD0+cl*cl/EAR];}
+function tunnelCoeff(a){const d=DELTA*S/C,vol=0.7*S*0.12*0.035,esb=TAU1*vol/Math.pow(C,1.5);let [clu,cdu]=coeff(a);
+  for(let i=0;i<3;i++){const da=d*clu*180/Math.PI;const [clf,cdf]=coeff(a+da);const ewb=(S/(4*C))*cdu,eps=esb+ewb;clu=clf/(1-2*eps);cdu=(cdf-d*clu*clu)/(1-3*esb-2*ewb);}return [clu,cdu];}
+const cfg={m11:1e-6,m12:0,m21:0,m22:1e-6,kq:1.067,p_station_pa:101325,aoa_zero_deg:0,aoa_sign:1,servo_gain:1,servo_offset_deg:0,lift_limit_n:1.5,drag_limit_n:0.8,fan_slew_up:0.25,aoa_min:-30,aoa_max:30,client_timeout_s:10,vbus_min_v:10.5,stall_rpm:300,stall_grace_s:3,led_brightness:0.4,led_on:1};
+const st={state:'IDLE',faults:new Set(),fan_cmd:0,fan_out:0,aoa_cmd:0,aoa_true:0,raw0:[0,0],dp0:0,tared:false,taring:null,seq:0,ring:[],tel:null,sweep:null,list:[],i:-1,pts:[],settle:0,acc:[],t:0,hx:0,drift:0,estop:false,fan_fail:false,stall:0,lastClient:null,weight:0.08,aoaZero:137.2};
+function fault(n){st.faults.add(n);st.state='FAULT';st.fan_cmd=st.fan_out=0;st.sweep=null;st.i=-1;}
+function tick(dt){st.t+=dt;
+  if(st.state!=='FAULT'){st.fan_out=st.fan_cmd>st.fan_out?Math.min(st.fan_cmd,st.fan_out+cfg.fan_slew_up*dt):st.fan_cmd;}
+  st.aoa_true+=(st.aoa_cmd-st.aoa_true)*Math.min(1,dt/0.25);st.drift+=gauss(0.3)*dt;
+  const q=q0*st.fan_out*st.fan_out,[cl,cd]=tunnelCoeff(st.aoa_true),lift=q*S*cl,drag=q*S*cd+q*STRUT;
+  st.hx+=dt;if(st.hx<0.1)return;st.hx-=0.1;
+  const lr=Math.round(123456+(lift-st.weight+CROSS*drag)/NPC+st.drift+gauss(12)),dr=Math.round(-98765+drag/NPC+st.drift*0.5+gauss(12));
+  const dp=q/1.067+0.8+gauss(0.05),temp=21.5+0.3*Math.sin(st.t/60),araw=(st.aoaZero+st.aoa_true+gauss(0.05))%360,rpm=st.fan_fail?0:(st.fan_out>0.05?8000*st.fan_out+gauss(20):0);
+  if(st.taring){st.taring.l.push(lr);st.taring.d.push(dr);st.taring.dp.push(dp);if(st.t-st.taring.t0>=2){const m=a=>a.reduce((x,y)=>x+y,0)/a.length;st.raw0=[m(st.taring.l),m(st.taring.d)];st.dp0=m(st.taring.dp);st.tared=true;st.taring=null;}}
+  const dl=lr-st.raw0[0],dd=dr-st.raw0[1],ln=cfg.m11*dl+cfg.m12*dd,dn=cfg.m21*dl+cfg.m22*dd,dpm=dp-st.dp0,qm=cfg.kq*dpm,rho=cfg.p_station_pa/(287.05*(temp+273.15));
+  let a=((araw-cfg.aoa_zero_deg+180)%360+360)%360-180;st.seq++;
+  st.tel={seq:st.seq,t_ms:Math.round(st.t*1000),state:st.state,faults:'',fan_cmd:st.fan_cmd,fan_out:st.fan_out,fan_rpm:rpm,aoa_cmd:st.aoa_cmd,aoa_deg:cfg.aoa_sign*a,aoa_raw:araw,lift_raw:lr,drag_raw:dr,lift_n:ln,drag_n:dn,dp_pa:dpm,q_pa:qm,v_ms:Math.sqrt(Math.max(0,2*qm/rho)),temp_c:temp,rho:rho,vbus:12.1,tared:st.tared?1:0};
+  st.ring.push(st.tel);if(st.ring.length>200)st.ring.shift();
+  if(st.estop)fault('ESTOP');if(Math.abs(ln)>cfg.lift_limit_n)fault('OVERLOAD_LIFT');if(Math.abs(dn)>cfg.drag_limit_n)fault('OVERLOAD_DRAG');
+  if(st.fan_out>0.25&&rpm<cfg.stall_rpm)st.stall+=0.1;else st.stall=0;if(st.stall>cfg.stall_grace_s)fault('FAN_STALL');
+  if(st.sweep&&st.state==='SWEEP'){const ready=Math.abs(st.fan_out-st.fan_cmd)<1e-6;
+    if(st.settle<st.sweep.settle||!ready){if(ready)st.settle+=0.1;}
+    else{st.acc.push(Object.assign({},st.tel));if(st.acc.length>=st.sweep.samples){st.pts.push(point());st.acc=[];st.i++;
+      if(st.i>=st.list.length){st.sweep=null;st.i=-1;st.fan_cmd=0;st.state='IDLE';}else{st.aoa_cmd=clamp(st.list[st.i]);st.settle=0;}}}}
+  st.tel.state=st.state;st.tel.faults=[...st.faults].sort().join(',');
+}
+const clamp=v=>Math.max(cfg.aoa_min,Math.min(cfg.aoa_max,v));
+function point(){const A=st.acc,n=A.length,mean=k=>A.reduce((s,a)=>s+a[k],0)/n,sd=k=>{const m=mean(k);return n>1?Math.sqrt(A.reduce((s,a)=>s+(a[k]-m)**2,0)/(n-1)):0;};const q=mean('q_pa'),rho=mean('rho');
+  return {aoa_cmd:st.list[st.i],aoa_deg:mean('aoa_deg'),aoa_sd:sd('aoa_deg'),fan_cmd:st.fan_cmd,fan_rpm:mean('fan_rpm'),q_pa:q,q_sd:sd('q_pa'),v_ms:Math.sqrt(Math.max(0,2*q/rho)),temp_c:mean('temp_c'),rho:rho,lift_n:mean('lift_n'),lift_sd:sd('lift_n'),drag_n:mean('drag_n'),drag_sd:sd('drag_n'),lift_raw:Math.round(mean('lift_raw')),drag_raw:Math.round(mean('drag_raw')),n:n};}
+function leds(){const B=Math.max(0,Math.min(1,cfg.led_brightness))*(cfg.led_on>0.5?1:0),ph=0.5+0.5*Math.sin(st.t*2*Math.PI);let out='';
+  for(let i=0;i<24;i++){let k,c;if(st.state==='FAULT'){k=B*(Math.floor(st.t*4)%2?1:0.15);c=[1,0.1,0.15];}else if(st.taring){k=B*(0.3+0.7*ph);c=[0.93,0.96,1];}
+    else if(st.state==='SWEEP'){const prog=st.i/Math.max(1,st.list.length);if((i+0.5)/24<=prog){k=B;c=[1,0.78,0.43];}else{k=B*0.7;c=[0.4,0.89,1];}}
+    else if(st.state==='RUNNING'){k=B*(0.5+0.5*st.fan_out);c=[0.4,0.89,1];}else{k=B*0.35;c=[0.55,0.7,0.85];}
+    out+=c.map(v=>('0'+Math.round(255*Math.min(1,v*k)).toString(16)).slice(-2)).join('');}return out;}
+function cmd(p){const g=(k,d=0)=>parseFloat(p.get(k)??d);const c=p.get('cmd');
+  switch(c){
+    case 'fan':if(st.state==='FAULT')return[400,'fault active: clear faults first'];if(st.state==='SWEEP')return[400,'sweep running: stop it first'];st.fan_cmd=Math.max(0,Math.min(1,g('value')));st.state=st.fan_cmd>0?'RUNNING':'IDLE';return[200,'ok'];
+    case 'aoa':if(st.state==='SWEEP')return[400,'sweep running'];st.aoa_cmd=clamp(g('value'));return[200,'ok'];
+    case 'tare':if(st.fan_out>0.02)return[400,'fan must be off (wind-off tare)'];st.taring={t0:st.t,l:[],d:[],dp:[]};return[200,'taring 2 s'];
+    case 'zero_aoa':cfg.aoa_zero_deg=st.tel?st.tel.aoa_raw:0;return[200,'ok'];
+    case 'stop':st.fan_cmd=st.fan_out=0;if(st.state!=='FAULT')st.state='IDLE';st.sweep=null;st.i=-1;return[200,'stopped'];
+    case 'clear_faults':if(st.estop)return[400,'stop loop is open'];st.faults.clear();st.state='IDLE';st.fan_cmd=st.fan_out=0;st.stall=0;return[200,'ok'];
+    case 'light':cfg.led_on=(p.get('value')==='0')?0:1;return[200,'ok'];
+    case 'set':{const k=p.get('key');if(!(k in cfg))return[400,'unknown key'];cfg[k]=g('value');return[200,'ok'];}
+    case 'sweep':{if(st.state==='FAULT')return[400,'fault active'];if(!st.tared)return[400,'tare first (wind off)'];const aoas=(p.get('list')||'').split(',').map(s=>parseFloat(s)).filter(x=>!isNaN(x));if(!aoas.length)return[400,'empty list'];
+      let lst=aoas.slice();if(p.get('updown')==='1')lst=lst.concat(aoas.slice(0,-1).reverse());st.sweep={fan:Math.max(0,Math.min(1,g('fan'))),settle:g('settle',2),samples:parseInt(p.get('samples')||'40')};st.list=lst;st.pts=[];st.i=0;st.settle=0;st.acc=[];st.fan_cmd=st.sweep.fan;st.aoa_cmd=clamp(lst[0]);st.state='SWEEP';return[200,'ok'];}
+  }return[400,'unknown command'];}
+const csvHdr='point,aoa_cmd_deg,aoa_deg,aoa_sd_deg,fan_cmd,fan_rpm,q_pa,q_sd_pa,v_ms,temp_c,rho_kgm3,lift_n,lift_sd_n,drag_n,drag_sd_n,lift_raw,drag_raw,n\n';
+function csv(){return csvHdr+st.pts.map((p,i)=>[i,p.aoa_cmd.toFixed(3),p.aoa_deg.toFixed(3),p.aoa_sd.toFixed(3),p.fan_cmd.toFixed(3),p.fan_rpm.toFixed(0),p.q_pa.toFixed(3),p.q_sd.toFixed(3),p.v_ms.toFixed(3),p.temp_c.toFixed(2),p.rho.toFixed(4),p.lift_n.toFixed(6),p.lift_sd.toFixed(6),p.drag_n.toFixed(6),p.drag_sd.toFixed(6),p.lift_raw,p.drag_raw,p.n].join(',')).join('\n')+(st.pts.length?'\n':'');}
+function status(){const t=Object.assign({},st.tel||{seq:0,state:st.state,faults:''});t.sweep_i=st.sweep?st.i:-1;t.sweep_n=st.sweep?st.list.length:0;t.sweep_points=st.pts.length;t.leds=leds();delete t.aoa_raw;return t;}
+const R=(code,body,type)=>Promise.resolve(new Response(typeof body==='string'?body:JSON.stringify(body),{status:code,headers:{'Content-Type':type||'application/json'}}));
+let timer=null;
+window.BenairyDemo={
+  start(){if(timer)return;timer=setInterval(()=>{for(let k=0;k<2;k++)tick(0.01);},20);
+    const real=window.fetch.bind(window);
+    window.fetch=function(url,opt){const u=String(url);if(!u.includes('/api/'))return real(url,opt);const path=u.split('/api/')[1].split('?')[0];const qs=new URLSearchParams(u.split('?')[1]||'');
+      if(path==='status')return R(200,status());if(path==='samples'){const since=parseInt(qs.get('since')||'0');return R(200,st.ring.filter(s=>s.seq>since).map(s=>({seq:s.seq,t_ms:s.t_ms,lift_n:s.lift_n,drag_n:s.drag_n,q_pa:s.q_pa,aoa_deg:s.aoa_deg,fan_rpm:s.fan_rpm})));}
+      if(path==='config')return R(200,cfg);if(path==='sweep.csv')return R(200,csv(),'text/csv');if(path==='sweep.json')return R(200,st.pts);
+      if(path==='info')return R(200,{name:'Benairy',vendor:'Schreiber AI',fw:'browser-sim-0.1.0',sim:true});
+      if(path==='cmd'){const p=new URLSearchParams(opt&&opt.body?String(opt.body):'');const [c,m]=cmd(p);return R(c,m,'text/plain');}
+      if(path==='sim'){const p=new URLSearchParams(opt&&opt.body?String(opt.body):'');if(p.has('estop'))st.estop=p.get('estop')==='1';if(p.has('fan_fail'))st.fan_fail=p.get('fan_fail')==='1';return R(200,'ok','text/plain');}
+      return R(404,'not found','text/plain');};},
+  inject(k,v){const p=new URLSearchParams();p.set(k,v);return window.fetch('/api/sim',{method:'POST',body:p});},
+  active:()=>!!timer};
+})();
+
+</script>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const api=(path,opt)=>fetch(path,opt).then(r=>r.text().then(t=>({ok:r.ok,text:t})));
+const post=(params)=>api('/api/cmd',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams(params)});
+const logEl=$('log');
+function log(m,cls){const d=document.createElement('div');if(cls)d.className=cls;d.textContent=new Date().toLocaleTimeString()+'  '+m;logEl.prepend(d);while(logEl.children.length>200)logEl.lastChild.remove();}
+let lastSeq=0,samples=[],liveLog=[],lastFaults='',sweepWasRunning=false,status=null,zeroed=false,exported=false,sweptOnce=false;
+const fmt=(v,d)=>(v===undefined||v===null||isNaN(v))?'–':Number(v).toFixed(d);
+function setPill(state){$('state_t').textContent=state;$('state').className='pill '+state;}
+function steps(){const s=status||{};const on=!!status;
+  const st=[on, zeroed, !!s.tared, sweptOnce||s.sweep_points>0, exported];
+  let now=st.findIndex(x=>!x); st.forEach((d,i)=>{const e=$('st'+(i+1));e.className='step'+(d?' done':'')+(i===now?' now':'');});}
+async function poll(){
+  try{
+    const r=await fetch('/api/status');status=await r.json();
+    $('conn').textContent='connected · seq '+status.seq;
+    setPill(status.state);
+    $('v_ms').textContent=fmt(status.v_ms,2);$('q_pa').textContent=fmt(status.q_pa,1);
+    $('lift_mn').textContent=fmt(status.lift_n*1000,1);$('drag_mn').textContent=fmt(status.drag_n*1000,2);
+    $('aoa_deg').textContent=fmt(status.aoa_deg,2);$('fan_rpm').textContent=fmt(status.fan_rpm,0);
+    $('fan_out').textContent=fmt(status.fan_out*100,0);$('temp_c').textContent=fmt(status.temp_c,1);
+    $('rho').textContent=fmt(status.rho,3);$('vbus').textContent=fmt(status.vbus,1);
+    $('tared').innerHTML=status.tared?'<span class="ok">done</span>':'<span class="warn">needed</span>';
+    $('faults').innerHTML=status.faults?'<span class="fault">'+status.faults+'</span>':'<span class="ok">none</span>';
+    const b=$('banner');if(status.faults){b.className='on';$('banner_t').textContent='Fan stopped by a fault: '+status.faults.replace(/,/g,', ')+'. Fix the cause, then clear the faults.';}else b.className='';
+    if(status.faults&&status.faults!==lastFaults)log('FAULT: '+status.faults+' (fan stopped)','fault');
+    if(status.leds){const st=$('strip');if(st.children.length!==24){st.innerHTML='<i></i>'.repeat(24);}for(let i=0;i<24;i++){const c='#'+status.leds.substr(6*i,6);st.children[i].style.background=c;st.children[i].style.boxShadow='0 0 8px 1px '+c+'88';}}
+    lastFaults=status.faults;
+    const sr=await fetch('/api/samples?since='+lastSeq);const arr=await sr.json();
+    for(const s of arr){samples.push(s);liveLog.push(s);lastSeq=s.seq;}
+    if(samples.length>300)samples=samples.slice(-300);
+    if(liveLog.length>20000)liveLog=liveLog.slice(-20000);
+    drawChart();
+    if(status.sweep_n>0){$('sw_status').textContent='point '+(status.sweep_i+1)+' of '+status.sweep_n;$('sw_bar').style.width=(100*status.sweep_i/status.sweep_n)+'%';sweepWasRunning=true;}
+    else if(sweepWasRunning){sweepWasRunning=false;sweptOnce=true;$('sw_bar').style.width='100%';$('sw_status').textContent='sweep finished';log('Sweep finished. '+status.sweep_points+' points.');loadSweep();}
+    steps();
+  }catch(e){$('conn').textContent='no connection';setPill('OFFLINE');$('state').className='pill FAULT';}
+  setTimeout(poll,200);
+}
+function smooth(vals,n){if(!$('smooth').checked||n<2)return vals;const out=[];let acc=0;for(let i=0;i<vals.length;i++){acc+=vals[i];if(i>=n)acc-=vals[i-n];out.push(acc/Math.min(i+1,n));}return out;}
+function drawChart(){
+  const c=$('chart'),ctx=c.getContext('2d'),H=260;c.width=c.clientWidth*devicePixelRatio;c.height=H*devicePixelRatio;ctx.scale(devicePixelRatio,devicePixelRatio);
+  const W=c.clientWidth;ctx.clearRect(0,0,W,H);if(samples.length<2)return;
+  const lanes=[['lift_n','#66E3FF',1000,'lift mN'],['drag_n','#FFC66D',1000,'drag mN'],['q_pa','#B8A1FF',1,'q Pa']];
+  const lh=(H-16)/lanes.length;
+  lanes.forEach(([key,col,scale,name],li)=>{
+    const y0=8+li*lh,y1=y0+lh-10;
+    let vals=smooth(samples.map(s=>s[key]*scale),10);let lo=Math.min(...vals),hi=Math.max(...vals);if(hi-lo<1e-6){hi=lo+1;}
+    const pad=(hi-lo)*0.15;lo-=pad;hi+=pad;
+    ctx.strokeStyle='#1b2a3e';ctx.beginPath();ctx.moveTo(56,y1);ctx.lineTo(W-10,y1);ctx.stroke();
+    ctx.strokeStyle=col;ctx.lineWidth=1.6;ctx.beginPath();
+    vals.forEach((v,i)=>{const x=56+(W-66)*i/(vals.length-1),y=y1-(y1-y0)*(v-lo)/(hi-lo);i?ctx.lineTo(x,y):ctx.moveTo(x,y);});ctx.stroke();
+    ctx.fillStyle=col;ctx.font='600 11px system-ui';ctx.fillText(name,6,y0+10);
+    ctx.fillStyle='#9FB3C8';ctx.font='10px system-ui';ctx.fillText(hi.toFixed(1),6,y0+24);ctx.fillText(lo.toFixed(1),6,y1-2);
+    ctx.fillStyle=col;ctx.font='600 12px system-ui';const last=vals[vals.length-1];ctx.fillText(last.toFixed(key==='drag_n'?2:1),W-52,y0+12);
+  });
+}
+function plotXY(id,pts,xl,yl){
+  const c=$(id),ctx=c.getContext('2d'),H=230;c.width=c.clientWidth*devicePixelRatio;c.height=H*devicePixelRatio;ctx.scale(devicePixelRatio,devicePixelRatio);
+  const W=c.clientWidth;ctx.clearRect(0,0,W,H);ctx.fillStyle='#9FB3C8';ctx.font='600 11px system-ui';ctx.fillText(yl+' vs '+xl,10,14);
+  if(pts.length<1){ctx.font='11px system-ui';ctx.fillText('No sweep yet. Run a sweep to see the polar.',10,H/2);return;}
+  const xs=pts.map(p=>p[0]),ys=pts.map(p=>p[1]);
+  let x0=Math.min(0,...xs),x1=Math.max(...xs),y0=Math.min(0,...ys),y1=Math.max(...ys);if(x1-x0<1e-9)x1=x0+1;if(y1-y0<1e-9)y1=y0+1;
+  const X=x=>48+(W-60)*(x-x0)/(x1-x0),Y=y=>H-22-(H-44)*(y-y0)/(y1-y0);
+  ctx.strokeStyle='#223349';ctx.beginPath();ctx.moveTo(X(x0),Y(0));ctx.lineTo(X(x1),Y(0));ctx.moveTo(X(0),Y(y0));ctx.lineTo(X(0),Y(y1));ctx.stroke();
+  ctx.font='10px system-ui';ctx.fillText(x1.toFixed(2),W-40,H-6);ctx.fillText(y1.toFixed(2),6,26);ctx.fillText(y0.toFixed(2),6,H-24);
+  ctx.strokeStyle='#66E3FF';ctx.lineWidth=1.6;ctx.beginPath();pts.forEach((p,i)=>{i?ctx.lineTo(X(p[0]),Y(p[1])):ctx.moveTo(X(p[0]),Y(p[1]));});ctx.stroke();
+  ctx.fillStyle='#66E3FF';pts.forEach(p=>{ctx.beginPath();ctx.arc(X(p[0]),Y(p[1]),3.2,0,6.3);ctx.fill();if(p[2]){ctx.strokeStyle='#66E3FF88';ctx.beginPath();ctx.moveTo(X(p[0]),Y(p[1]-p[2]));ctx.lineTo(X(p[0]),Y(p[1]+p[2]));ctx.stroke();}});
+}
+let sweepRows=[];
+async function loadSweep(){
+  const r=await fetch('/api/sweep.json');sweepRows=await r.json();const S=+$('ref_area').value;
+  const tb=$('sw_table').querySelector('tbody');tb.innerHTML='';const p1=[],p2=[];
+  sweepRows.forEach((p,i)=>{const cl=p.q_pa>0?p.lift_n/(p.q_pa*S):0,cd=p.q_pa>0?p.drag_n/(p.q_pa*S):0;
+    const tr=document.createElement('tr');tr.innerHTML=`<td>${i}</td><td>${fmt(p.aoa_cmd,1)}</td><td>${fmt(p.aoa_deg,2)}</td><td>${fmt(p.q_pa,1)}</td><td>${fmt(p.v_ms,2)}</td><td>${fmt(p.lift_n*1000,1)}</td><td>${fmt(p.lift_sd*1000,1)}</td><td>${fmt(p.drag_n*1000,2)}</td><td>${fmt(p.drag_sd*1000,2)}</td><td>${fmt(cl,3)}</td><td>${fmt(cd,4)}</td><td>${p.n}</td>`;tb.appendChild(tr);
+    if(p.q_pa>0){p1.push([p.aoa_deg,cl,p.lift_sd/(p.q_pa*S)]);p2.push([cd,cl]);}});
+  plotXY('polar1',p1,'α (deg)','CL');plotXY('polar2',p2,'CD','CL');
+}
+function download(name,text){lastCsv=text;$('csv_box').hidden=false;$('btn_copy_csv').hidden=false;$('csv_box').value=text;try{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'text/csv'}));a.download=name;a.click();}catch(e){}exported=true;steps();log('CSV ready: '+name+' ('+text.split('\n').length+' lines). If the download did not start, use Copy CSV.');}
+let lastCsv='';
+$('btn_copy_csv').onclick=()=>{navigator.clipboard.writeText(lastCsv).then(()=>log('CSV copied to the clipboard.')).catch(()=>{$('csv_box').select();log('Select the text box and copy it.');});};
+function meta(){const d=new Date().toISOString();return `# benairy_sweep_csv,1\n# run,${$('run_name').value}\n# model,${$('model_name').value}\n# ref_area_m2,${$('ref_area').value}\n# ref_chord_m,${$('ref_chord').value}\n# exported,${d}\n# source,${$('simtag').style.display==='none'?'hardware':'simulation'}\n`;}
+$('btn_csv').onclick=async()=>{const r=await fetch('/api/sweep.csv');download(`${$('run_name').value}_${$('model_name').value}_${Date.now()}.csv`,meta()+await r.text());};
+$('btn_live_csv').onclick=()=>{let t='seq,t_ms,lift_n,drag_n,q_pa,aoa_deg,fan_rpm\n';for(const s of liveLog)t+=`${s.seq},${s.t_ms},${s.lift_n},${s.drag_n},${s.q_pa},${s.aoa_deg},${s.fan_rpm}\n`;download(`live_${Date.now()}.csv`,meta()+t);};
+async function cmd(params,label){const r=await post(params);log((label||params.cmd)+': '+r.text,r.ok?'':'warn');return r;}
+$('btn_stop').onclick=()=>cmd({cmd:'stop'},'STOP');
+$('btn_clear').onclick=$('banner_clear').onclick=()=>cmd({cmd:'clear_faults'});
+$('fan_slider').oninput=e=>$('fan_slider_v').textContent=e.target.value+' %';
+$('btn_fan').onclick=()=>cmd({cmd:'fan',value:$('fan_slider').value/100},'fan '+$('fan_slider').value+' %');
+$('btn_aoa').onclick=()=>cmd({cmd:'aoa',value:$('aoa_in').value},'angle '+$('aoa_in').value);
+$('btn_tare').onclick=()=>cmd({cmd:'tare'});
+$('btn_zero').onclick=async()=>{const r=await cmd({cmd:'zero_aoa'});if(r.ok){zeroed=true;steps();}};
+$('btn_light').onclick=()=>cmd({cmd:'light',value:1},'light on');
+$('btn_light_off').onclick=()=>cmd({cmd:'light',value:0},'light off');
+$('led_b').oninput=e=>$('led_b_v').textContent=e.target.value+' %';
+$('led_b').onchange=e=>cmd({cmd:'set',key:'led_brightness',value:e.target.value/100},'brightness '+e.target.value+' %');
+$('btn_sweep').onclick=()=>cmd({cmd:'sweep',list:$('sw_list').value,fan:$('sw_fan').value/100,settle:$('sw_settle').value,samples:$('sw_samples').value,updown:$('sw_updown').checked?1:0},'sweep');
+$('btn_sweep_stop').onclick=()=>cmd({cmd:'stop'},'stop sweep');
+async function loadCfg(){const r=await fetch('/api/config');const c=await r.json();const g=$('cfg');g.innerHTML='';
+  for(const k of Object.keys(c)){const d=document.createElement('div');d.innerHTML=`<label>${k}</label><br><input type="number" step="any" value="${c[k]}" id="cfg_${k}"> <button data-k="${k}">Save</button>`;g.appendChild(d);
+    d.querySelector('button').onclick=async()=>{await cmd({cmd:'set',key:k,value:$('cfg_'+k).value},'set '+k);};}}
+$('btn_cfg_reload').onclick=loadCfg;
+function enableDemo(){if(!window.BenairyDemo||window.BenairyDemo.active())return;window.BenairyDemo.start();$('demo_panel').hidden=false;$('simtag').style.display='';$('fw').textContent='browser simulation';log('No controller found. The page runs its own simulation of the tunnel.','warn');
+  $('demo_estop').onclick=()=>window.BenairyDemo.inject('estop',1);$('demo_estop_close').onclick=()=>window.BenairyDemo.inject('estop',0);
+  $('demo_fanfail').onclick=()=>window.BenairyDemo.inject('fan_fail',1);$('demo_fanok').onclick=()=>window.BenairyDemo.inject('fan_fail',0);}
+const wantDemo=location.hash==='#demo'||location.protocol==='file:';
+if(wantDemo){enableDemo();}else{fetch('/api/info',{signal:AbortSignal.timeout(2500)}).then(r=>{if(!r.ok)throw 0;return r.json();}).then(i=>{$('fw').textContent=i.fw+(i.sim?' (simulation)':'');if(i.sim)$('simtag').style.display='';}).catch(()=>enableDemo());}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')cmd({cmd:'stop'},'STOP (Esc)');});
+window.addEventListener('resize',()=>{drawChart();loadSweep();});
+loadCfg();loadSweep();poll();steps();log('Dashboard ready. Esc stops the fan.');
+})();
+</script>
+</body>
+</html>

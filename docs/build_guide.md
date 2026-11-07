@@ -111,7 +111,7 @@ pio run -t upload
 
 With the Arduino IDE: create a sketch folder named `benairy`, copy the files from `firmware/src` into it, rename `main.cpp` to `benairy.ino`, select your ESP32 board, and upload.
 
-Before you build, run `python3 tools/embed_dashboard.py` if you changed the dashboard. It regenerates `firmware/src/dashboard_html.h`.
+Before you build, run `python3 tools/build_dashboard.py` if you changed the dashboard. It regenerates `firmware/src/dashboard_html.h`.
 
 The controller starts a Wi-Fi access point named `Benairy` with password `windtunnel`. Open `http://192.168.4.1`. Change both in `firmware/src/config.h`.
 
