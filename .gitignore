@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+firmware/.pio/
+firmware/test_host/build/
+*.egg-info/
+data/runs/*.csv
+!data/examples/

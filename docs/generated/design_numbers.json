@@ -1,0 +1,110 @@
+{
+  "parameters": {
+    "ts_width_m": 0.1,
+    "ts_height_m": 0.1,
+    "ts_length_m": 0.25,
+    "sc_width_m": 0.2,
+    "sc_height_m": 0.2,
+    "contraction_length_m": 0.2,
+    "hc_cell_m": 0.006,
+    "hc_wall_m": 0.0008,
+    "hc_length_m": 0.04,
+    "screen_open_area": 0.6,
+    "n_screens": 2,
+    "fan_name": "ARCTIC S12038-8K (120x120x38 mm, PWM, 12 V, 2.2 A)",
+    "fan_q_free_cfm": 220.0,
+    "fan_dp_max_mmH2O": 37.0,
+    "fan_rpm_max": 8000.0,
+    "fan_frame_m": 0.12,
+    "fan_rotor_d_m": 0.116,
+    "fan_hub_d_m": 0.04,
+    "diffuser_length_m": 0.15,
+    "rho": 1.2,
+    "mu": 1.81e-05,
+    "wing_span_m": 0.08,
+    "wing_chord_m": 0.035,
+    "car_length_m": 0.075,
+    "car_width_m": 0.029,
+    "car_height_m": 0.024,
+    "car_frontal_fill": 0.85,
+    "strut_chord_m": 0.012,
+    "strut_thick_m": 0.0035,
+    "strut_exposed_m": 0.045,
+    "cell_rating_g": 100.0,
+    "cell_noise_g_rms": 0.01,
+    "cell_nonlin_pct_fs": 0.05,
+    "cell_creep_pct_fs": 0.03,
+    "dp_sensor_name": "Sensirion SDP810-125Pa",
+    "dp_range_pa": 125.0,
+    "dp_zero_drift_pa": 0.1,
+    "dp_span_pct": 3.0,
+    "dp_resolution_pa": 0.01
+  },
+  "operating_point": {
+    "Q_m3s": 0.091392188239616,
+    "Q_cfm": 193.64926197139934,
+    "V_ms": 9.139218823961599,
+    "q_pa": 50.11519242735242,
+    "dp_fan_pa": 81.71505459325553,
+    "K": {
+      "honeycomb": 0.06696263312336441,
+      "screens": 0.09027777777777779,
+      "contraction": 0.02,
+      "test_section": 0.04999999999999999,
+      "diffuser": 0.15,
+      "exit": 1.153304153238978,
+      "guard_and_model": 0.1,
+      "total": 1.6305445641401202
+    },
+    "A_ts": 0.010000000000000002,
+    "A_fan": 0.009311680625240147
+  },
+  "contraction_ratio": 4.0,
+  "Re_Dh": 60591.50601521504,
+  "boundary_layer_mm_at_model": {
+    "laminar": 2.72521256925607,
+    "turbulent": 6.545417883514857
+  },
+  "turbulence_factor_screens": 0.5806451612903227,
+  "turbulence_factor_contraction_axial": 0.25,
+  "forces": {
+    "wing": {
+      "S_m2": 0.0028000000000000004,
+      "AR": 2.2857142857142856,
+      "Re": 21207.027105325258,
+      "lift_N_at_CL0.8": 0.11225803103726945,
+      "lift_gf_at_CL0.8": 11.447133428568312,
+      "drag_N_at_CD0.04": 0.005612901551863472,
+      "drag_gf_at_CD0.04": 0.5723566714284156,
+      "drag_gf_at_CD0.25": 3.5772291964275977,
+      "blockage_pct_at_15deg": 7.246933262870579
+    },
+    "car": {
+      "A_frontal_m2": 0.0005916,
+      "Re_length": 45443.629511411265,
+      "drag_N_at_CD0.5": 0.014824073920010844,
+      "drag_gf_at_CD0.5": 1.511634851861833,
+      "lift_gf_at_CL0.2": 0.6046539407447333,
+      "blockage_pct": 5.915999999999999
+    },
+    "strut": {
+      "drag_gf_airfoil": 0.06439012553569674,
+      "drag_gf_round_rod": 0.8048765691962093
+    }
+  },
+  "balance_budget": {
+    "u_force_g_1sigma": 0.05315072906367325,
+    "noise_g_rms": 0.01,
+    "nonlinearity_g": 0.05,
+    "creep_g": 0.03,
+    "car_drag_rel_unc_pct": 3.5161089993531953,
+    "wing_lift_rel_unc_pct": 0.46431475089672986,
+    "wing_drag_rel_unc_pct_CD0.04": 9.286295017934597
+  },
+  "q_budget": {
+    "u_q_pa": 1.5067777742014596,
+    "u_q_rel_pct": 3.0066287311691013,
+    "u_V_rel_pct": 1.5033143655845507
+  },
+  "fan_power_W_est": 26.400000000000002
+}

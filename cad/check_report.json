@@ -1,0 +1,513 @@
+{
+  "bed": 256.0,
+  "parts": {
+    "bellmouth_quarter": {
+      "watertight": true,
+      "volume_mm3": 98987.98502470895,
+      "print_extents": [
+        125.0,
+        125.0,
+        22.0
+      ],
+      "fits_bed": true,
+      "overhang_fraction": 0.0,
+      "overhang_area_mm2": 0.0
+    },
+    "settling_chamber": {
+      "watertight": true,
+      "volume_mm3": 209073.53404049305,
+      "print_extents": [
+        220.0,
+        220.0,
+        100.0
+      ],
+      "fits_bed": true,
+      "overhang_fraction": 0.0341,
+      "overhang_area_mm2": 6675.2
+    },
+    "honeycomb": {
+      "watertight": true,
+      "volume_mm3": 369486.81783771515,
+      "print_extents": [
+        199.0,
+        199.0,
+        36.0
+      ],
+      "fits_bed": true,
+      "overhang_fraction": 0.0,
+      "overhang_area_mm2": 0.0
+    },
+    "screen_frame": {
+      "watertight": true,
+      "volume_mm3": 10642.5,
+      "print_extents": [
+        199.0,
+        199.0,
+        2.5
+      ],
+      "fits_bed": true,
+      "overhang_fraction": 0.0,
+      "overhang_area_mm2": 0.0
+    },
+    "screen_frame_A_pos": {
+      "watertight": true,
+      "volume_mm3": 10642.5
+    },
+    "spacer_12": {
+      "watertight": true,
+      "volume_mm3": 37440.0,
+      "print_extents": [
+        199.0,
+        199.0,
+        12.0
+      ],
+      "fits_bed": true,
+      "overhang_fraction": 0.0,
+      "overhang_area_mm2": 0.0
+    },
+    "spacer_12_pos2": {
+      "watertight": true,
+      "volume_mm3": 37440.0
+    },
+    "spacer_28": {
+      "watertight": true,
+      "volume_mm3": 87360.0,
+      "print_extents": [
+        199.0,
+        199.0,
+        28.0
+      ],
+      "fits_bed": true,
+      "overhang_fraction": 0.0,
+      "overhang_area_mm2": 0.0
+    },
+    "contraction_1": {
+      "watertight": true,
+      "volume_mm3": 185283.6567395491,
+      "print_extents": [
+        220.0,
+        220.0,
+        100.0
+      ],
+      "fits_bed": true,
+      "overhang_fraction": 0.0368,
+      "overhang_area_mm2": 6676.9
+    },
+    "contraction_2": {
+      "watertight": true,
+      "volume_mm3": 126134.99433196196,
+      "print_extents": [
+        170.0,
+        170.0,
+        100.0
+      ],
+      "fits_bed": true,
+      "overhang_fraction": 0.0507,
+      "overhang_area_mm2": 6062.1
+    },
+    "test_section_1": {
+      "watertight": true,
+      "volume_mm3": 120618.77231352194,
+      "print_extents": [
+        120.0,
+        120.0,
+        120.0
+      ],
+      "fits_bed": true,
+      "overhang_fraction": 0.031,
+      "overhang_area_mm2": 3553.4
+    },
+    "test_section_2": {
+      "watertight": true,
+      "volume_mm3": 127034.65017678154,
+      "print_extents": [
+        120.0,
+        120.0,
+        130.0
+      ],
+      "fits_bed": true,
+      "overhang_fraction": 0.0374,
+      "overhang_area_mm2": 3831.5
+    },
+    "window_clip": {
+      "watertight": true,
+      "volume_mm3": 13119.787544417495,
+      "print_extents": [
+        118.0,
+        92.0,
+        3.0
+      ],
+      "fits_bed": true,
+      "overhang_fraction": 0.0,
+      "overhang_area_mm2": 0.0
+    },
+    "diffuser": {
+      "watertight": true,
+      "volume_mm3": 155901.44653141926,
+      "print_extents": [
+        130.0,
+        130.0,
+        150.0
+      ],
+      "fits_bed": true,
+      "overhang_fraction": 0.0254,
+      "overhang_area_mm2": 3494.6
+    },
+    "fan_guard": {
+      "watertight": true,
+      "volume_mm3": 49338.01722845094,
+      "print_extents": [
+        130.0,
+        130.0,
+        6.0
+      ],
+      "fits_bed": true,
+      "overhang_fraction": 0.0,
+      "overhang_area_mm2": 0.0
+    },
+    "balance_bay": {
+      "watertight": true,
+      "volume_mm3": 146621.46850869618,
+      "print_extents": [
+        120.0,
+        106.0,
+        80.0
+      ],
+      "fits_bed": true,
+      "overhang_fraction": 0.0266,
+      "overhang_area_mm2": 2853.8
+    },
+    "platform": {
+      "watertight": true,
+      "volume_mm3": 8794.258978040196,
+      "print_extents": [
+        46.0,
+        48.3,
+        24.0
+      ],
+      "fits_bed": true,
+      "overhang_fraction": 0.2129,
+      "overhang_area_mm2": 1484.8
+    },
+    "bracket": {
+      "watertight": true,
+      "volume_mm3": 4260.31912049931,
+      "print_extents": [
+        29.4,
+        24.0,
+        17.0
+      ],
+      "fits_bed": true,
+      "overhang_fraction": 0.2399,
+      "overhang_area_mm2": 615.9
+    },
+    "drum": {
+      "watertight": true,
+      "volume_mm3": 3594.021625394158,
+      "print_extents": [
+        20.0,
+        19.99,
+        18.0
+      ],
+      "fits_bed": true,
+      "overhang_fraction": 0.1748,
+      "overhang_area_mm2": 327.8
+    },
+    "strut_long": {
+      "watertight": true,
+      "volume_mm3": 2303.6836138556973,
+      "print_extents": [
+        14.0,
+        4.5,
+        61.0
+      ],
+      "fits_bed": true,
+      "overhang_fraction": 0.0179,
+      "overhang_area_mm2": 32.8
+    },
+    "strut_short": {
+      "watertight": true,
+      "volume_mm3": 632.4720460441628,
+      "print_extents": [
+        14.0,
+        4.5,
+        22.0
+      ],
+      "fits_bed": true,
+      "overhang_fraction": 0.0519,
+      "overhang_area_mm2": 32.8
+    },
+    "wing_naca0012": {
+      "watertight": true,
+      "volume_mm3": 9157.281526817942,
+      "print_extents": [
+        35.0,
+        80.0,
+        10.64
+      ],
+      "fits_bed": true,
+      "overhang_fraction": 0.2626,
+      "overhang_area_mm2": 1675.9
+    },
+    "wing_naca4412": {
+      "watertight": true,
+      "volume_mm3": 9279.946312641323,
+      "print_extents": [
+        35.06,
+        80.0,
+        12.01
+      ],
+      "fits_bed": true,
+      "overhang_fraction": 0.3193,
+      "overhang_area_mm2": 2058.8
+    },
+    "wing_flat_plate": {
+      "watertight": true,
+      "volume_mm3": 5804.769049032947,
+      "print_extents": [
+        34.0,
+        80.0,
+        9.5
+      ],
+      "fits_bed": true,
+      "overhang_fraction": 0.0103,
+      "overhang_area_mm2": 65.8
+    },
+    "car_tray": {
+      "watertight": true,
+      "volume_mm3": 5908.761589598758,
+      "print_extents": [
+        75.0,
+        32.0,
+        13.0
+      ],
+      "fits_bed": true,
+      "overhang_fraction": 0.3589,
+      "overhang_area_mm2": 2121.1
+    },
+    "ground_board": {
+      "watertight": true,
+      "volume_mm3": 23695.344976210366,
+      "print_extents": [
+        90.0,
+        99.0,
+        11.5
+      ],
+      "fits_bed": true,
+      "overhang_fraction": 0.0054,
+      "overhang_area_mm2": 100.6
+    },
+    "stand_settling": {
+      "watertight": true,
+      "volume_mm3": 69120.0,
+      "print_extents": [
+        40.0,
+        216.0,
+        42.0
+      ],
+      "fits_bed": true,
+      "overhang_fraction": 0.3025,
+      "overhang_area_mm2": 8160.0
+    },
+    "stand_test_section": {
+      "watertight": true,
+      "volume_mm3": 69120.0,
+      "print_extents": [
+        40.0,
+        116.0,
+        92.0
+      ],
+      "fits_bed": true,
+      "overhang_fraction": 0.1542,
+      "overhang_area_mm2": 4160.0
+    },
+    "stand_fan": {
+      "watertight": true,
+      "volume_mm3": 56123.203125,
+      "print_extents": [
+        30.0,
+        146.0,
+        75.0
+      ],
+      "fits_bed": true,
+      "overhang_fraction": 0.1875,
+      "overhang_area_mm2": 3900.0
+    },
+    "tap_barb": {
+      "watertight": true,
+      "volume_mm3": 191.35097998892863,
+      "print_extents": [
+        8.0,
+        8.0,
+        12.0
+      ],
+      "fits_bed": true,
+      "overhang_fraction": 0.0164,
+      "overhang_area_mm2": 5.5
+    },
+    "pitot_wand": {
+      "watertight": true,
+      "volume_mm3": 1839.716686890087,
+      "print_extents": [
+        25.0,
+        86.3,
+        14.0
+      ],
+      "fits_bed": true,
+      "overhang_fraction": 0.2004,
+      "overhang_area_mm2": 483.0
+    },
+    "probe_plug": {
+      "watertight": true,
+      "volume_mm3": 200.12103262827887,
+      "print_extents": [
+        9.99,
+        10.0,
+        4.5
+      ],
+      "fits_bed": true,
+      "overhang_fraction": 0.0,
+      "overhang_area_mm2": 0.0
+    },
+    "zero_gauge": {
+      "watertight": true,
+      "volume_mm3": 2240.0,
+      "print_extents": [
+        30.0,
+        10.0,
+        30.0
+      ],
+      "fits_bed": true,
+      "overhang_fraction": 0.1199,
+      "overhang_area_mm2": 260.0
+    },
+    "electronics_box": {
+      "watertight": true,
+      "volume_mm3": 57804.09473365379,
+      "print_extents": [
+        114.8,
+        79.8,
+        37.4
+      ],
+      "fits_bed": true,
+      "overhang_fraction": 0.0012,
+      "overhang_area_mm2": 62.4
+    },
+    "electronics_lid": {
+      "watertight": true,
+      "volume_mm3": 20484.48072883606,
+      "print_extents": [
+        114.8,
+        79.8,
+        5.0
+      ],
+      "fits_bed": true,
+      "overhang_fraction": 0.0,
+      "overhang_area_mm2": 0.0
+    },
+    "cam_clip": {
+      "watertight": true,
+      "volume_mm3": 3615.8937745821,
+      "print_extents": [
+        44.0,
+        32.0,
+        6.0
+      ],
+      "fits_bed": true,
+      "overhang_fraction": 0.1254,
+      "overhang_area_mm2": 548.0
+    },
+    "ref_fan": {
+      "watertight": true,
+      "volume_mm3": 547200.0
+    },
+    "ref_servo": {
+      "watertight": true,
+      "volume_mm3": 6495.204492429155
+    },
+    "ref_lift_cell": {
+      "watertight": true,
+      "volume_mm3": 1843.198681640206
+    },
+    "ref_drag_cell": {
+      "watertight": true,
+      "volume_mm3": 1843.198681640206
+    },
+    "ref_window_sheet_R": {
+      "watertight": true,
+      "volume_mm3": 7330.560297241202
+    },
+    "ref_window_sheet_L": {
+      "watertight": true,
+      "volume_mm3": 7330.560297241202
+    },
+    "ref_car": {
+      "watertight": true,
+      "volume_mm3": 44304.0
+    },
+    "ref_as5600": {
+      "watertight": true,
+      "volume_mm3": 774.4001846313477
+    }
+  },
+  "interference": [],
+  "ok": true,
+  "gaps": [
+    {
+      "a": "ref_fan",
+      "b": "fan_guard",
+      "axis": "x",
+      "gap_mm": 0.0,
+      "note": "fan to guard (should touch: 0)"
+    },
+    {
+      "a": "ref_servo",
+      "b": "floor underside",
+      "axis": "z",
+      "gap_mm": 7.0,
+      "note": "servo body to floor underside"
+    },
+    {
+      "a": "drum",
+      "b": "floor underside",
+      "axis": "z",
+      "gap_mm": 3.0,
+      "note": "drum top to floor underside"
+    },
+    {
+      "a": "ref_as5600",
+      "b": "floor underside",
+      "axis": "z",
+      "gap_mm": 2.0,
+      "note": "sensor board top to floor underside"
+    },
+    {
+      "a": "platform",
+      "b": "floor underside",
+      "axis": "z",
+      "gap_mm": 1.0,
+      "note": "platform (hanger) top to floor underside"
+    },
+    {
+      "a": "ref_lift_cell",
+      "b": "drum",
+      "axis": "z",
+      "gap_mm": 2.0119171142578125,
+      "note": "lift cell top to drum bottom"
+    },
+    {
+      "a": "ref_servo",
+      "b": "ref_drag_cell",
+      "axis": "x",
+      "gap_mm": 7.3000030517578125,
+      "note": "servo to drag cell (x)"
+    },
+    {
+      "a": "ref_servo",
+      "b": "ref_lift_cell",
+      "axis": "z",
+      "gap_mm": 6.0,
+      "note": "servo body to lift cell (z)"
+    }
+  ]
+}

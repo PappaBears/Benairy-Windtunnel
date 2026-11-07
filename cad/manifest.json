@@ -1,0 +1,1375 @@
+{
+  "params": {
+    "bed": 256.0,
+    "ts_half": 50.0,
+    "ts1_len": 120.0,
+    "ts2_len": 130.0,
+    "sc_half": 100.0,
+    "sc_len": 100.0,
+    "contraction_len": 200.0,
+    "wall": 2.0,
+    "flange_w": 8.0,
+    "flange_t": 3.2,
+    "bolt_d": 3.4,
+    "bell_r": 22.0,
+    "bell_t": 22.0,
+    "bell_outer_half": 125.0,
+    "hc_cell": 6.0,
+    "hc_wall": 0.5,
+    "hc_len": 36.0,
+    "hc_rim": 3.0,
+    "stack_clear": 0.5,
+    "spacer_wall": 4.0,
+    "screen_t": 2.5,
+    "screen_frame_w": 5.5,
+    "lip_w": 2.0,
+    "lip_t": 3.0,
+    "diff_len": 150.0,
+    "fan_frame": 120.0,
+    "fan_bore": 116.0,
+    "fan_hole_pitch": 105.0,
+    "fan_bolt_d": 4.4,
+    "fan_plate_half": 65.0,
+    "fan_plate_t": 5.0,
+    "fan_depth": 38.0,
+    "guard_t": 6.0,
+    "guard_rings": 5,
+    "guard_spokes": 12,
+    "guard_bar": 2.4,
+    "window_x0": 140.0,
+    "window_x1": 230.0,
+    "window_half_z": 32.0,
+    "window_recess": 1.2,
+    "window_margin": 5.0,
+    "window_boss": 2.0,
+    "window_boss_w": 18.0,
+    "magnet_d": 6.0,
+    "magnet_t": 2.0,
+    "tap_d": 1.2,
+    "probe_hole_d": 5.0,
+    "model_x": 185.0,
+    "slot_x_half": 15.0,
+    "slot_y_half": 4.0,
+    "bay_bolt_x": [
+      140.0,
+      230.0
+    ],
+    "bay_bolt_y": 45.0,
+    "gb_peg_x": [
+      150.0,
+      220.0
+    ],
+    "gb_peg_y": 35.0,
+    "gb_peg_d": 2.0,
+    "gb_peg_hole_d": 2.3,
+    "bay_x0": 125.0,
+    "bay_x1": 245.0,
+    "bay_half_y": 53.0,
+    "bay_depth": 80.0,
+    "bay_base_t": 4.0,
+    "bay_lip_w": 8.0,
+    "cell_L": 45.0,
+    "cell_w": 6.4,
+    "cell_t": 6.4,
+    "cell_hole_d": 2.2,
+    "cell_holes": [
+      4.5,
+      10.5
+    ],
+    "drum_r": 10.0,
+    "drum_half_w": 6.0,
+    "drum_z": -65.0,
+    "stub_d": 8.0,
+    "stub_len": 6.0,
+    "stub_hole_clear": 0.3,
+    "servo_L": 22.5,
+    "servo_W": 12.0,
+    "servo_H": 22.8,
+    "servo_shaft_from_end": 6.0,
+    "servo_flange_from_top": 6.8,
+    "servo_flange_t": 2.5,
+    "servo_tab": 5.0,
+    "servo_tab_hole_d": 2.0,
+    "servo_horn_gap": 2.0,
+    "strut_chord": 14.0,
+    "strut_t": 4.5,
+    "tongue_w": 6.0,
+    "tongue_t": 3.0,
+    "tongue_h": 6.0,
+    "tongue_clear": 0.2,
+    "pin_d": 1.6,
+    "wing_z": 3.0,
+    "car_tray_z": -37.0,
+    "ground_board_top": -38.5,
+    "ground_board_t": 3.0,
+    "ground_board_x": [
+      140.0,
+      230.0
+    ],
+    "ground_board_slot": [
+      36.0,
+      10.0
+    ],
+    "ground_board_bevel": 12.0,
+    "wing_chord": 35.0,
+    "wing_span": 80.0,
+    "wing_te_min": 0.8,
+    "pylon_t": 6.0,
+    "car_len": 75.0,
+    "car_w": 32.0,
+    "tray_t": 2.5,
+    "car_wheelbase": 45.0,
+    "car_track": 22.0,
+    "car_wheel_d": 9.0,
+    "stop_gap": 0.6,
+    "table_z": -132.0,
+    "ebox_inner": [
+      110.0,
+      75.0,
+      35.0
+    ],
+    "ebox_wall": 2.4
+  },
+  "kernel": "cadquery",
+  "parts": {
+    "bellmouth_quarter": {
+      "reference": false,
+      "note": "Print 4. Flat face down.",
+      "qty": 4,
+      "configs": [
+        "all"
+      ],
+      "assembly_bbox": [
+        -322.0,
+        -0.0,
+        -0.0,
+        -300.0,
+        125.0,
+        125.0
+      ],
+      "volume_mm3": 99676.8,
+      "valid": true,
+      "print_bbox": [
+        -62.5,
+        -62.5,
+        0.0,
+        62.5,
+        62.5,
+        22.0
+      ],
+      "print_size": [
+        125.0,
+        125.0,
+        22.0
+      ]
+    },
+    "settling_chamber": {
+      "reference": false,
+      "note": "Open end up. No supports.",
+      "qty": 1,
+      "configs": [
+        "all"
+      ],
+      "assembly_bbox": [
+        -300.0,
+        -110.0,
+        -110.0,
+        -200.0,
+        110.0,
+        110.0
+      ],
+      "volume_mm3": 209072.3,
+      "valid": true,
+      "print_bbox": [
+        -110.0,
+        -110.0,
+        -0.0,
+        110.0,
+        110.0,
+        100.0
+      ],
+      "print_size": [
+        220.0,
+        220.0,
+        100.0
+      ]
+    },
+    "honeycomb": {
+      "reference": false,
+      "note": "941 hexagonal cells. Print with 0.4 mm nozzle, 2 walls, no infill.",
+      "qty": 1,
+      "configs": [
+        "all"
+      ],
+      "assembly_bbox": [
+        -268.0,
+        -99.5,
+        -99.5,
+        -232.0,
+        99.5,
+        99.5
+      ],
+      "volume_mm3": 369486.8,
+      "valid": true,
+      "print_bbox": [
+        -99.5,
+        -99.5,
+        0.0,
+        99.5,
+        99.5,
+        36.0
+      ],
+      "print_size": [
+        199.0,
+        199.0,
+        36.0
+      ]
+    },
+    "screen_frame": {
+      "reference": false,
+      "note": "Print 2. Glue mesh on the downstream face.",
+      "qty": 2,
+      "configs": [
+        "all"
+      ],
+      "assembly_bbox": [
+        -205.5,
+        -99.5,
+        -99.5,
+        -203.0,
+        99.5,
+        99.5
+      ],
+      "volume_mm3": 10642.5,
+      "valid": true,
+      "print_bbox": [
+        -99.5,
+        -99.5,
+        0.0,
+        99.5,
+        99.5,
+        2.5
+      ],
+      "print_size": [
+        199.0,
+        199.0,
+        2.5
+      ]
+    },
+    "screen_frame_A_pos": {
+      "reference": true,
+      "note": "Same part as screen_frame (position reference only).",
+      "qty": 1,
+      "configs": [
+        "all"
+      ],
+      "assembly_bbox": [
+        -220.0,
+        -99.5,
+        -99.5,
+        -217.5,
+        99.5,
+        99.5
+      ],
+      "volume_mm3": 10642.5,
+      "valid": true
+    },
+    "spacer_12": {
+      "reference": false,
+      "note": "Print 2.",
+      "qty": 2,
+      "configs": [
+        "all"
+      ],
+      "assembly_bbox": [
+        -217.5,
+        -99.5,
+        -99.5,
+        -205.5,
+        99.5,
+        99.5
+      ],
+      "volume_mm3": 37440.0,
+      "valid": true,
+      "print_bbox": [
+        -99.5,
+        -99.5,
+        0.0,
+        99.5,
+        99.5,
+        12.0
+      ],
+      "print_size": [
+        199.0,
+        199.0,
+        12.0
+      ]
+    },
+    "spacer_12_pos2": {
+      "reference": true,
+      "note": "Same part as spacer_12 (position reference only).",
+      "qty": 1,
+      "configs": [
+        "all"
+      ],
+      "assembly_bbox": [
+        -232.0,
+        -99.5,
+        -99.5,
+        -220.0,
+        99.5,
+        99.5
+      ],
+      "volume_mm3": 37440.0,
+      "valid": true
+    },
+    "spacer_28": {
+      "reference": false,
+      "note": "Print 1.",
+      "qty": 1,
+      "configs": [
+        "all"
+      ],
+      "assembly_bbox": [
+        -296.0,
+        -99.5,
+        -99.5,
+        -268.0,
+        99.5,
+        99.5
+      ],
+      "volume_mm3": 87360.0,
+      "valid": true,
+      "print_bbox": [
+        -99.5,
+        -99.5,
+        0.0,
+        99.5,
+        99.5,
+        28.0
+      ],
+      "print_size": [
+        199.0,
+        199.0,
+        28.0
+      ]
+    },
+    "contraction_1": {
+      "reference": false,
+      "note": "Large end down.",
+      "qty": 1,
+      "configs": [
+        "all"
+      ],
+      "assembly_bbox": [
+        -200.0,
+        -110.0,
+        -110.0,
+        -100.0,
+        110.0,
+        110.0
+      ],
+      "volume_mm3": 185670.5,
+      "valid": true,
+      "print_bbox": [
+        -110.0,
+        -110.0,
+        -0.0,
+        110.0,
+        110.0,
+        100.0
+      ],
+      "print_size": [
+        220.0,
+        220.0,
+        100.0
+      ]
+    },
+    "contraction_2": {
+      "reference": false,
+      "note": "Large end down.",
+      "qty": 1,
+      "configs": [
+        "all"
+      ],
+      "assembly_bbox": [
+        -100.0,
+        -85.0,
+        -85.0,
+        0.0,
+        85.0,
+        85.0
+      ],
+      "volume_mm3": 123164.2,
+      "valid": true,
+      "print_bbox": [
+        -85.0,
+        -85.0,
+        -0.0,
+        85.0,
+        85.0,
+        100.0
+      ],
+      "print_size": [
+        170.0,
+        170.0,
+        100.0
+      ]
+    },
+    "test_section_1": {
+      "reference": false,
+      "note": "Stand on a flange. Drill the 1.2 mm taps clean.",
+      "qty": 1,
+      "configs": [
+        "all"
+      ],
+      "assembly_bbox": [
+        0.0,
+        -60.0,
+        -60.0,
+        120.0,
+        60.0,
+        60.0
+      ],
+      "volume_mm3": 120618.4,
+      "valid": true,
+      "print_bbox": [
+        -60.0,
+        -60.0,
+        -0.0,
+        60.0,
+        60.0,
+        120.0
+      ],
+      "print_size": [
+        120.0,
+        120.0,
+        120.0
+      ]
+    },
+    "test_section_2": {
+      "reference": false,
+      "note": "Stand on a flange. Window openings need no support when printed vertically.",
+      "qty": 1,
+      "configs": [
+        "all"
+      ],
+      "assembly_bbox": [
+        120.0,
+        -60.0,
+        -60.0,
+        250.0,
+        60.0,
+        60.0
+      ],
+      "volume_mm3": 127033.1,
+      "valid": true,
+      "print_bbox": [
+        -60.0,
+        -60.0,
+        -0.0,
+        60.0,
+        60.0,
+        130.0
+      ],
+      "print_size": [
+        120.0,
+        120.0,
+        130.0
+      ]
+    },
+    "window_clip": {
+      "reference": false,
+      "note": "Print 2. Flat side down.",
+      "qty": 2,
+      "configs": [
+        "all"
+      ],
+      "assembly_bbox": [
+        126.0,
+        54.0,
+        -46.0,
+        244.0,
+        57.0,
+        46.0
+      ],
+      "volume_mm3": 13119.4,
+      "valid": true,
+      "print_bbox": [
+        -59.0,
+        -46.0,
+        0.0,
+        59.0,
+        46.0,
+        3.0
+      ],
+      "print_size": [
+        118.0,
+        92.0,
+        3.0
+      ]
+    },
+    "diffuser": {
+      "reference": false,
+      "note": "Fan plate up. 4 hex nut traps face the duct.",
+      "qty": 1,
+      "configs": [
+        "all"
+      ],
+      "assembly_bbox": [
+        250.0,
+        -65.0,
+        -65.0,
+        400.0,
+        65.0,
+        65.0
+      ],
+      "volume_mm3": 155296.0,
+      "valid": true,
+      "print_bbox": [
+        -65.0,
+        -65.0,
+        0.0,
+        65.0,
+        65.0,
+        150.0
+      ],
+      "print_size": [
+        130.0,
+        130.0,
+        150.0
+      ]
+    },
+    "fan_guard": {
+      "reference": false,
+      "note": "Flat side down.",
+      "qty": 1,
+      "configs": [
+        "all"
+      ],
+      "assembly_bbox": [
+        438.0,
+        -65.0,
+        -65.0,
+        444.0,
+        65.0,
+        65.0
+      ],
+      "volume_mm3": 49251.4,
+      "valid": true,
+      "print_bbox": [
+        -65.0,
+        -65.0,
+        -0.0,
+        65.0,
+        65.0,
+        6.0
+      ],
+      "print_size": [
+        130.0,
+        130.0,
+        6.0
+      ]
+    },
+    "balance_bay": {
+      "reference": false,
+      "note": "Open side up. Stop fingers need supports.",
+      "qty": 1,
+      "configs": [
+        "all"
+      ],
+      "assembly_bbox": [
+        125.0,
+        -53.0,
+        -132.0,
+        245.0,
+        53.0,
+        -52.0
+      ],
+      "volume_mm3": 146620.8,
+      "valid": true,
+      "print_bbox": [
+        -60.0,
+        -52.997,
+        0.0,
+        60.0,
+        53.003,
+        80.0
+      ],
+      "print_size": [
+        120.0,
+        106.0,
+        80.0
+      ]
+    },
+    "platform": {
+      "reference": false,
+      "note": "Plate down, hanger up. Supports under the hanger and posts.",
+      "qty": 1,
+      "configs": [
+        "all"
+      ],
+      "assembly_bbox": [
+        168.0,
+        -28.0,
+        -77.0,
+        214.0,
+        20.3,
+        -53.0
+      ],
+      "volume_mm3": 8793.5,
+      "valid": true,
+      "print_bbox": [
+        -23.0,
+        -24.151,
+        0.003,
+        23.0,
+        24.149,
+        24.003
+      ],
+      "print_size": [
+        46.0,
+        48.3,
+        24.0
+      ]
+    },
+    "bracket": {
+      "reference": false,
+      "note": "Arm down. Supports under the block overhang.",
+      "qty": 1,
+      "configs": [
+        "all"
+      ],
+      "assembly_bbox": [
+        200.8,
+        9.0,
+        -90.0,
+        230.2,
+        33.0,
+        -73.0
+      ],
+      "volume_mm3": 4260.1,
+      "valid": true,
+      "print_bbox": [
+        -14.701,
+        -11.999,
+        0.0,
+        14.699,
+        12.001,
+        17.0
+      ],
+      "print_size": [
+        29.4,
+        24.0,
+        17.0
+      ]
+    },
+    "drum": {
+      "reference": false,
+      "note": "Flat (horn) face down. Supports in the socket are not needed.",
+      "qty": 1,
+      "configs": [
+        "all"
+      ],
+      "assembly_bbox": [
+        175.0,
+        -12.0,
+        -75.0,
+        195.0,
+        6.0,
+        -55.0
+      ],
+      "volume_mm3": 3599.1,
+      "valid": true,
+      "print_bbox": [
+        -10.0,
+        -10.0,
+        -0.0,
+        10.0,
+        10.0,
+        18.0
+      ],
+      "print_size": [
+        20.0,
+        20.0,
+        18.0
+      ]
+    },
+    "strut_long": {
+      "reference": false,
+      "note": "Vertical. Brim recommended.",
+      "qty": 1,
+      "configs": [
+        "wing"
+      ],
+      "assembly_bbox": [
+        178.0,
+        -2.25,
+        -61.0,
+        192.0,
+        2.25,
+        0.0
+      ],
+      "volume_mm3": 2303.7,
+      "valid": true,
+      "print_bbox": [
+        -7.0,
+        -2.25,
+        0.0,
+        7.0,
+        2.25,
+        61.0
+      ],
+      "print_size": [
+        14.0,
+        4.5,
+        61.0
+      ]
+    },
+    "strut_short": {
+      "reference": false,
+      "note": "Vertical. Brim recommended.",
+      "qty": 1,
+      "configs": [
+        "car"
+      ],
+      "assembly_bbox": [
+        178.0,
+        -2.25,
+        -61.0,
+        192.0,
+        2.25,
+        -39.0
+      ],
+      "volume_mm3": 632.5,
+      "valid": true,
+      "print_bbox": [
+        -7.0,
+        -2.25,
+        0.0,
+        7.0,
+        2.25,
+        22.0
+      ],
+      "print_size": [
+        14.0,
+        4.5,
+        22.0
+      ]
+    },
+    "wing_naca0012": {
+      "reference": false,
+      "note": "Upside down, pylon up. Supports in the socket only.",
+      "qty": 1,
+      "configs": [
+        "wing"
+      ],
+      "assembly_bbox": [
+        176.25,
+        -40.0,
+        -5.5,
+        211.25,
+        40.0,
+        5.138
+      ],
+      "volume_mm3": 9157.3,
+      "valid": true,
+      "print_bbox": [
+        -17.5,
+        -40.0,
+        -0.0,
+        17.5,
+        40.0,
+        10.638
+      ],
+      "print_size": [
+        35.0,
+        80.0,
+        10.64
+      ]
+    },
+    "wing_naca4412": {
+      "reference": false,
+      "note": "Upside down, pylon up. Supports in the socket only.",
+      "qty": 1,
+      "configs": [
+        "wing_b"
+      ],
+      "assembly_bbox": [
+        176.242,
+        -40.0,
+        -5.5,
+        211.303,
+        40.0,
+        6.511
+      ],
+      "volume_mm3": 9279.9,
+      "valid": true,
+      "print_bbox": [
+        -17.53,
+        -40.0,
+        0.0,
+        17.53,
+        40.0,
+        12.011
+      ],
+      "print_size": [
+        35.06,
+        80.0,
+        12.01
+      ]
+    },
+    "wing_flat_plate": {
+      "reference": false,
+      "note": "Upside down, pylon up.",
+      "qty": 1,
+      "configs": [
+        "wing_c"
+      ],
+      "assembly_bbox": [
+        177.25,
+        -40.0,
+        -5.5,
+        211.25,
+        40.0,
+        4.0
+      ],
+      "volume_mm3": 5804.8,
+      "valid": true,
+      "print_bbox": [
+        -17.0,
+        -40.0,
+        0.0,
+        17.0,
+        40.0,
+        9.5
+      ],
+      "print_size": [
+        34.0,
+        80.0,
+        9.5
+      ]
+    },
+    "car_tray": {
+      "reference": false,
+      "note": "Flat. Supports under the neck.",
+      "qty": 1,
+      "configs": [
+        "car"
+      ],
+      "assembly_bbox": [
+        147.5,
+        -16.0,
+        -44.5,
+        222.5,
+        16.0,
+        -31.5
+      ],
+      "volume_mm3": 5908.5,
+      "valid": true,
+      "print_bbox": [
+        -37.5,
+        -16.0,
+        0.0,
+        37.5,
+        16.0,
+        13.0
+      ],
+      "print_size": [
+        75.0,
+        32.0,
+        13.0
+      ]
+    },
+    "ground_board": {
+      "reference": false,
+      "note": "Upside down (pegs up).",
+      "qty": 1,
+      "configs": [
+        "car"
+      ],
+      "assembly_bbox": [
+        140.0,
+        -49.5,
+        -50.0,
+        230.0,
+        49.5,
+        -38.5
+      ],
+      "volume_mm3": 23696.3,
+      "valid": true,
+      "print_bbox": [
+        -45.0,
+        -49.5,
+        0.0,
+        45.0,
+        49.5,
+        11.5
+      ],
+      "print_size": [
+        90.0,
+        99.0,
+        11.5
+      ]
+    },
+    "stand_settling": {
+      "reference": false,
+      "note": "Flat.",
+      "qty": 1,
+      "configs": [
+        "all"
+      ],
+      "assembly_bbox": [
+        -270.0,
+        -108.0,
+        -132.0,
+        -230.0,
+        108.0,
+        -90.0
+      ],
+      "volume_mm3": 69120.0,
+      "valid": true,
+      "print_bbox": [
+        -20.0,
+        -108.0,
+        0.0,
+        20.0,
+        108.0,
+        42.0
+      ],
+      "print_size": [
+        40.0,
+        216.0,
+        42.0
+      ]
+    },
+    "stand_test_section": {
+      "reference": false,
+      "note": "Flat.",
+      "qty": 1,
+      "configs": [
+        "all"
+      ],
+      "assembly_bbox": [
+        30.0,
+        -58.0,
+        -132.0,
+        70.0,
+        58.0,
+        -40.0
+      ],
+      "volume_mm3": 69120.0,
+      "valid": true,
+      "print_bbox": [
+        -20.0,
+        -58.0,
+        0.0,
+        20.0,
+        58.0,
+        92.0
+      ],
+      "print_size": [
+        40.0,
+        116.0,
+        92.0
+      ]
+    },
+    "stand_fan": {
+      "reference": false,
+      "note": "Flat.",
+      "qty": 1,
+      "configs": [
+        "all"
+      ],
+      "assembly_bbox": [
+        382.5,
+        -73.0,
+        -132.0,
+        412.5,
+        73.0,
+        -57.0
+      ],
+      "volume_mm3": 56123.2,
+      "valid": true,
+      "print_bbox": [
+        -15.0,
+        -73.0,
+        0.0,
+        15.0,
+        73.0,
+        75.0
+      ],
+      "print_size": [
+        30.0,
+        146.0,
+        75.0
+      ]
+    },
+    "tap_barb": {
+      "reference": false,
+      "note": "Print 6. Flange down.",
+      "qty": 6,
+      "configs": [
+        "all"
+      ],
+      "assembly_bbox": [
+        -4.0,
+        -4.0,
+        0.0,
+        4.0,
+        4.0,
+        12.0
+      ],
+      "volume_mm3": 191.7,
+      "valid": true,
+      "print_bbox": [
+        -4.002,
+        -4.0,
+        0.005,
+        3.998,
+        4.0,
+        12.005
+      ],
+      "print_size": [
+        8.0,
+        8.0,
+        12.0
+      ]
+    },
+    "pitot_wand": {
+      "reference": false,
+      "note": "On its side so the 1.5 mm channels print clean.",
+      "qty": 1,
+      "configs": [
+        "cal"
+      ],
+      "assembly_bbox": [
+        167.0,
+        -7.0,
+        0.7,
+        192.0,
+        7.0,
+        87.0
+      ],
+      "volume_mm3": 1841.8,
+      "valid": true,
+      "print_bbox": [
+        -12.5,
+        -43.15,
+        0.0,
+        12.5,
+        43.15,
+        14.0
+      ],
+      "print_size": [
+        25.0,
+        86.3,
+        14.0
+      ]
+    },
+    "probe_plug": {
+      "reference": false,
+      "note": "Cap down.",
+      "qty": 1,
+      "configs": [
+        "car",
+        "wing",
+        "wing_b",
+        "wing_c"
+      ],
+      "assembly_bbox": [
+        180.0,
+        -5.0,
+        49.5,
+        190.0,
+        5.0,
+        54.0
+      ],
+      "volume_mm3": 200.5,
+      "valid": true,
+      "print_bbox": [
+        -5.0,
+        -5.0,
+        -0.0,
+        5.0,
+        5.0,
+        4.5
+      ],
+      "print_size": [
+        10.0,
+        10.0,
+        4.5
+      ]
+    },
+    "zero_gauge": {
+      "reference": false,
+      "note": "Flat.",
+      "qty": 1,
+      "configs": [
+        "wing",
+        "wing_b",
+        "wing_c"
+      ],
+      "assembly_bbox": [
+        187.55,
+        20.0,
+        -50.0,
+        217.55,
+        30.0,
+        -20.0
+      ],
+      "volume_mm3": 2240.0,
+      "valid": true,
+      "print_bbox": [
+        -15.0,
+        -5.0,
+        0.0,
+        15.0,
+        5.0,
+        30.0
+      ],
+      "print_size": [
+        30.0,
+        10.0,
+        30.0
+      ]
+    },
+    "electronics_box": {
+      "reference": false,
+      "note": "Open side up.",
+      "qty": 1,
+      "configs": [
+        "all"
+      ],
+      "assembly_bbox": [
+        -120.0,
+        80.0,
+        -132.0,
+        -5.2,
+        159.8,
+        -94.6
+      ],
+      "volume_mm3": 57804.1,
+      "valid": true,
+      "print_bbox": [
+        -57.4,
+        -39.9,
+        0.0,
+        57.4,
+        39.9,
+        37.4
+      ],
+      "print_size": [
+        114.8,
+        79.8,
+        37.4
+      ]
+    },
+    "electronics_lid": {
+      "reference": false,
+      "note": "Flat side down.",
+      "qty": 1,
+      "configs": [
+        "all"
+      ],
+      "assembly_bbox": [
+        -120.0,
+        80.0,
+        -97.6,
+        -5.2,
+        159.8,
+        -92.6
+      ],
+      "volume_mm3": 20484.5,
+      "valid": true,
+      "print_bbox": [
+        -57.4,
+        -39.9,
+        0.0,
+        57.4,
+        39.9,
+        5.0
+      ],
+      "print_size": [
+        114.8,
+        79.8,
+        5.0
+      ]
+    },
+    "cam_clip": {
+      "reference": false,
+      "note": "Optional. Flat side down.",
+      "qty": 1,
+      "configs": [
+        "all"
+      ],
+      "assembly_bbox": [
+        160.0,
+        57.0,
+        -16.0,
+        204.0,
+        63.0,
+        16.0
+      ],
+      "volume_mm3": 3615.7,
+      "valid": true,
+      "print_bbox": [
+        -22.0,
+        -16.0,
+        0.0,
+        22.0,
+        16.0,
+        6.0
+      ],
+      "print_size": [
+        44.0,
+        32.0,
+        6.0
+      ]
+    },
+    "ref_fan": {
+      "reference": true,
+      "note": "ARCTIC S12038-8K envelope",
+      "qty": 1,
+      "configs": [
+        "all"
+      ],
+      "assembly_bbox": [
+        400.0,
+        -60.0,
+        -60.0,
+        438.0,
+        60.0,
+        60.0
+      ],
+      "volume_mm3": 547200.0,
+      "valid": true
+    },
+    "ref_servo": {
+      "reference": true,
+      "note": "MG90S envelope",
+      "qty": 1,
+      "configs": [
+        "all"
+      ],
+      "assembly_bbox": [
+        174.0,
+        6.0,
+        -71.0,
+        206.5,
+        30.8,
+        -59.0
+      ],
+      "volume_mm3": 6495.3,
+      "valid": true
+    },
+    "ref_lift_cell": {
+      "reference": true,
+      "note": "200 g bar cell envelope",
+      "qty": 1,
+      "configs": [
+        "all"
+      ],
+      "assembly_bbox": [
+        201.8,
+        -25.0,
+        -83.4,
+        208.2,
+        20.0,
+        -77.0
+      ],
+      "volume_mm3": 1843.2,
+      "valid": true
+    },
+    "ref_drag_cell": {
+      "reference": true,
+      "note": "100 g bar cell envelope",
+      "qty": 1,
+      "configs": [
+        "all"
+      ],
+      "assembly_bbox": [
+        213.8,
+        23.8,
+        -122.0,
+        220.2,
+        30.2,
+        -77.0
+      ],
+      "volume_mm3": 1843.2,
+      "valid": true
+    },
+    "ref_window_sheet_R": {
+      "reference": true,
+      "note": "1 mm clear sheet",
+      "qty": 1,
+      "configs": [
+        "all"
+      ],
+      "assembly_bbox": [
+        135.2,
+        52.9,
+        -36.8,
+        234.8,
+        53.9,
+        36.8
+      ],
+      "volume_mm3": 7330.6,
+      "valid": true
+    },
+    "ref_window_sheet_L": {
+      "reference": true,
+      "note": "1 mm clear sheet",
+      "qty": 1,
+      "configs": [
+        "all"
+      ],
+      "assembly_bbox": [
+        135.2,
+        -53.9,
+        -36.8,
+        234.8,
+        -52.9,
+        36.8
+      ],
+      "volume_mm3": 7330.6,
+      "valid": true
+    },
+    "ref_car": {
+      "reference": true,
+      "note": "1:64 car envelope",
+      "qty": 1,
+      "configs": [
+        "car"
+      ],
+      "assembly_bbox": [
+        149.5,
+        -13.0,
+        -34.5,
+        220.5,
+        13.0,
+        -10.5
+      ],
+      "volume_mm3": 44304.0,
+      "valid": true
+    },
+    "ref_as5600": {
+      "reference": true,
+      "note": "AS5600 board envelope",
+      "qty": 1,
+      "configs": [
+        "all"
+      ],
+      "assembly_bbox": [
+        174.0,
+        -16.6,
+        -76.0,
+        196.0,
+        -15.0,
+        -54.0
+      ],
+      "volume_mm3": 774.4,
+      "valid": true
+    }
+  }
+}
