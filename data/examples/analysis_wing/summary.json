@@ -1,0 +1,67 @@
+{
+  "lift_slope_fit": {
+    "cl_alpha_per_deg": 0.07481203597839334,
+    "se_cl_alpha": 0.0007251917956765935,
+    "alpha0_deg": 0.006954276065939006,
+    "se_alpha0": 0.0018215714186324854,
+    "n_points": 14,
+    "chi2_reduced": 0.17829373425997253,
+    "range_deg": [
+      -7.208872652499535,
+      7.243922400156454
+    ]
+  },
+  "cd_min": {
+    "value": 0.03625984901280558,
+    "u": 0.0012181309110895155,
+    "alpha_deg": 0.019693499152610382
+  },
+  "cl_max_in_sweep": {
+    "value": 0.8402375128463537,
+    "u": 0.028233575481742244,
+    "alpha_deg": 11.914234114459267
+  },
+  "ld_max": {
+    "value": 6.657503411635569,
+    "u": 0.38773135668952474,
+    "alpha_deg": 7.23385950867539
+  },
+  "oswald_e_estimate": {
+    "e": 0.9056758046909998,
+    "cd0_fit": 0.03632412569443467,
+    "k": 0.15376426584888353
+  },
+  "mean_q_pa": 32.00213043478261,
+  "mean_v_ms": 7.4019713869147825,
+  "blockage_eps_max": 0.015607885409181631,
+  "inputs": {
+    "run": "data/examples/sim_wing_run.csv",
+    "tare": "data/examples/sim_wing_tare.csv",
+    "strut": null,
+    "meta": {
+      "benairy_sweep_csv": "1",
+      "run": "wing_updown",
+      "model": "naca0012_sim",
+      "ref_area_m2": "0.0028",
+      "ref_chord_m": "0.035",
+      "source": "simulation"
+    },
+    "model": {
+      "S": 0.0028,
+      "chord": 0.035,
+      "span": 0.08,
+      "volume": 0.0,
+      "kind": "wing"
+    },
+    "budget": {
+      "u_cal_rel": 0.01,
+      "u_cross_rel": 0.005,
+      "u_q_rel": 0.03,
+      "u_q_abs": 0.15,
+      "u_alpha_b": 0.3,
+      "u_S_rel": 0.01,
+      "u_rho_rel": 0.005,
+      "k": 2.0
+    }
+  }
+}

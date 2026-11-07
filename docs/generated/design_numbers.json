@@ -31,6 +31,7 @@
     "strut_thick_m": 0.0035,
     "strut_exposed_m": 0.045,
     "cell_rating_g": 100.0,
+    "lift_cell_rating_g": 200.0,
     "cell_noise_g_rms": 0.01,
     "cell_nonlin_pct_fs": 0.05,
     "cell_creep_pct_fs": 0.03,
@@ -97,8 +98,9 @@
     "noise_g_rms": 0.01,
     "nonlinearity_g": 0.05,
     "creep_g": 0.03,
+    "u_lift_g_1sigma": 0.10488088481701516,
     "car_drag_rel_unc_pct": 3.5161089993531953,
-    "wing_lift_rel_unc_pct": 0.46431475089672986,
+    "wing_lift_rel_unc_pct": 0.9162196411135268,
     "wing_drag_rel_unc_pct_CD0.04": 9.286295017934597
   },
   "q_budget": {

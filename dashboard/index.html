@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Benairy Control</title>
+<style>
+:root{--bg:#0B1018;--panel:#152234;--line:#223349;--text:#EDF4FF;--muted:#9FB3C8;--cyan:#66E3FF;--amber:#FFC66D;--red:#FF707D;--green:#7CE38B}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 system-ui,Segoe UI,Roboto,sans-serif}
+header{display:flex;align-items:center;gap:16px;padding:10px 16px;border-bottom:1px solid var(--line);background:var(--panel)}
+header h1{font-size:18px;margin:0;letter-spacing:.3px}
+header .brand{color:var(--muted);font-size:12px}
+header .state{margin-left:auto;font-weight:600;padding:4px 10px;border-radius:6px;background:#1e3350}
+.state.RUNNING,.state.SWEEP{background:#114a3a;color:var(--green)}
+.state.FAULT{background:#5a1f27;color:var(--red)}
+.state.SIM{background:#4a3a11;color:var(--amber)}
+main{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px 16px;max-width:1500px;margin:0 auto}
+@media (max-width:900px){main{grid-template-columns:1fr}}
+section{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px}
+section h2{font-size:13px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin:0 0 10px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+.tile{background:#0f1a2a;border-radius:8px;padding:8px 10px}
+.tile .k{font-size:11px;color:var(--muted)}
+.tile .v{font-size:20px;font-variant-numeric:tabular-nums;font-weight:600}
+.tile .u{font-size:11px;color:var(--muted);margin-left:3px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:6px 0}
+label{color:var(--muted);font-size:12px}
+input[type=number],input[type=text],select{background:#0f1a2a;color:var(--text);border:1px solid var(--line);border-radius:6px;padding:6px 8px;width:110px}
+input[type=text].wide{width:260px}
+input[type=range]{width:220px}
+button{background:#1e3350;color:var(--text);border:1px solid #2c4568;border-radius:6px;padding:7px 12px;cursor:pointer;font-weight:600}
+button:hover{background:#27416a}
+button:disabled{opacity:.45;cursor:not-allowed}
+button.stop{background:#7a2430;border-color:#a33;font-size:15px;padding:10px 18px}
+button.primary{background:#0f5566;border-color:#1a7d94;color:var(--cyan)}
+canvas{width:100%;height:220px;background:#0f1a2a;border-radius:8px;display:block}
+table{width:100%;border-collapse:collapse;font-size:12px;font-variant-numeric:tabular-nums}
+th,td{padding:4px 6px;border-bottom:1px solid var(--line);text-align:right}
+th{color:var(--muted);font-weight:500}
+td:first-child,th:first-child{text-align:left}
+.log{height:120px;overflow:auto;background:#0f1a2a;border-radius:8px;padding:8px;font:12px/1.4 ui-monospace,Menlo,monospace;color:var(--muted)}
+.fault{color:var(--red);font-weight:600}
+.ok{color:var(--green)}
+.warn{color:var(--amber)}
+.progress{height:8px;background:#0f1a2a;border-radius:4px;overflow:hidden;margin:6px 0}
+.progress div{height:100%;background:var(--cyan);width:0}
+footer{color:var(--muted);font-size:11px;text-align:center;padding:10px}
+details summary{cursor:pointer;color:var(--muted)}
+.grid3{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:6px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Benairy</h1>
+  <span class="brand">Desktop wind tunnel control · Schreiber AI</span>
+  <span id="simtag" class="state SIM" style="display:none">SIMULATION</span>
+  <span id="state" class="state">CONNECTING</span>
+</header>
+<main>
+<section style="grid-column:1/-1">
+  <h2>Live data</h2>
+  <div class="tiles">
+    <div class="tile"><div class="k">Airspeed</div><div class="v"><span id="v_ms">–</span><span class="u">m/s</span></div></div>
+    <div class="tile"><div class="k">Dynamic pressure q</div><div class="v"><span id="q_pa">–</span><span class="u">Pa</span></div></div>
+    <div class="tile"><div class="k">Lift</div><div class="v"><span id="lift_mn">–</span><span class="u">mN</span></div></div>
+    <div class="tile"><div class="k">Drag</div><div class="v"><span id="drag_mn">–</span><span class="u">mN</span></div></div>
+    <div class="tile"><div class="k">Angle of attack</div><div class="v"><span id="aoa_deg">–</span><span class="u">deg</span></div></div>
+    <div class="tile"><div class="k">Fan</div><div class="v"><span id="fan_rpm">–</span><span class="u">rpm</span></div></div>
+    <div class="tile"><div class="k">Fan output</div><div class="v"><span id="fan_out">–</span><span class="u">%</span></div></div>
+    <div class="tile"><div class="k">Air temperature</div><div class="v"><span id="temp_c">–</span><span class="u">°C</span></div></div>
+    <div class="tile"><div class="k">Air density</div><div class="v"><span id="rho">–</span><span class="u">kg/m³</span></div></div>
+    <div class="tile"><div class="k">Supply</div><div class="v"><span id="vbus">–</span><span class="u">V</span></div></div>
+    <div class="tile"><div class="k">Tare</div><div class="v" id="tared">–</div></div>
+    <div class="tile"><div class="k">Faults</div><div class="v" id="faults" style="font-size:14px">–</div></div>
+  </div>
+  <canvas id="chart" height="220"></canvas>
+  <div class="row" style="justify-content:space-between"><span style="color:var(--muted);font-size:12px">Last 200 samples: <span style="color:var(--cyan)">lift</span> · <span style="color:var(--amber)">drag</span> · <span style="color:#b8a1ff">q</span></span><span id="conn" style="font-size:12px;color:var(--muted)"></span></div>
+</section>
+
+<section>
+  <h2>Manual control</h2>
+  <div class="row"><button class="stop" id="btn_stop">STOP FAN</button><button id="btn_clear">Clear faults</button></div>
+  <div class="row"><label>Fan</label><input type="range" id="fan_slider" min="0" max="100" value="0"><span id="fan_slider_v">0 %</span><button id="btn_fan">Set fan</button></div>
+  <div class="row"><label>Angle of attack</label><input type="number" id="aoa_in" value="0" step="0.5"><button id="btn_aoa">Set angle</button></div>
+  <div class="row"><button id="btn_tare" class="primary">Tare (wind off)</button><button id="btn_zero">Set angle zero</button></div>
+  <p style="color:var(--muted);font-size:12px;margin:6px 0 0">Do the tare with the fan off and the model installed. Set the angle zero with the zero gauge against the strut.</p>
+</section>
+
+<section>
+  <h2>Automated sweep</h2>
+  <div class="row"><label>Angles (deg)</label><input type="text" class="wide" id="sw_list" value="-6,-4,-2,0,2,4,6,8,10,12,14"></div>
+  <div class="row"><label>Fan</label><input type="number" id="sw_fan" value="80" min="0" max="100" step="5"><span style="color:var(--muted);font-size:12px">% (0 = wind-off tare sweep)</span></div>
+  <div class="row"><label>Settle</label><input type="number" id="sw_settle" value="3" step="0.5"><label>s</label>
+    <label>Samples</label><input type="number" id="sw_samples" value="40" step="10"><label>per point</label>
+    <label><input type="checkbox" id="sw_updown"> up and down</label></div>
+  <div class="row"><button id="btn_sweep" class="primary">Start sweep</button><button id="btn_sweep_stop">Stop sweep</button><span id="sw_status" style="color:var(--muted);font-size:12px"></span></div>
+  <div class="progress"><div id="sw_bar"></div></div>
+  <div class="row"><label>Run name</label><input type="text" id="run_name" value="run"><label>Model</label><input type="text" id="model_name" value="naca0012">
+    <label>Ref. area S</label><input type="number" id="ref_area" value="0.0028" step="0.0001"><label>m²</label>
+    <label>Chord</label><input type="number" id="ref_chord" value="0.035" step="0.001"><label>m</label></div>
+  <div class="row"><button id="btn_csv">Download sweep CSV</button><button id="btn_live_csv">Download live log CSV</button></div>
+</section>
+
+<section style="grid-column:1/-1">
+  <h2>Sweep results</h2>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+    <canvas id="polar1" height="220"></canvas>
+    <canvas id="polar2" height="220"></canvas>
+  </div>
+  <div style="max-height:260px;overflow:auto;margin-top:8px"><table id="sw_table"><thead><tr>
+    <th>#</th><th>α cmd</th><th>α meas</th><th>q Pa</th><th>V m/s</th><th>Lift mN</th><th>±</th><th>Drag mN</th><th>±</th><th>CL</th><th>CD</th><th>n</th></tr></thead><tbody></tbody></table></div>
+  <p style="color:var(--muted);font-size:12px">CL and CD here are raw: no tare subtraction and no wall correction. Use tools/analyze.py for corrected polars with uncertainty.</p>
+</section>
+
+<section style="grid-column:1/-1">
+  <details><summary>Settings (stored on the controller)</summary>
+  <div class="grid3" id="cfg"></div>
+  <div class="row"><button id="btn_cfg_reload">Reload</button></div>
+  </details>
+</section>
+
+<section style="grid-column:1/-1"><h2>Log</h2><div class="log" id="log"></div></section>
+</main>
+<footer>Benairy wind tunnel · Schreiber AI · firmware <span id="fw">?</span></footer>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const api=(path,opt)=>fetch(path,opt).then(r=>r.text().then(t=>({ok:r.ok,text:t})));
+const post=(params)=>api('/api/cmd',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams(params)});
+const logEl=$('log');
+function log(m,cls){const d=document.createElement('div');if(cls)d.className=cls;d.textContent=new Date().toLocaleTimeString()+'  '+m;logEl.prepend(d);while(logEl.children.length>200)logEl.lastChild.remove();}
+let lastSeq=0, samples=[], liveLog=[], lastFaults='', sweepWasRunning=false, status=null;
+const fmt=(v,d)=>(v===undefined||v===null||isNaN(v))?'–':Number(v).toFixed(d);
+
+async function poll(){
+  try{
+    const r=await fetch('/api/status'); status=await r.json();
+    $('conn').textContent='connected · seq '+status.seq;
+    $('state').textContent=status.state; $('state').className='state '+status.state;
+    $('v_ms').textContent=fmt(status.v_ms,2); $('q_pa').textContent=fmt(status.q_pa,1);
+    $('lift_mn').textContent=fmt(status.lift_n*1000,1); $('drag_mn').textContent=fmt(status.drag_n*1000,2);
+    $('aoa_deg').textContent=fmt(status.aoa_deg,2); $('fan_rpm').textContent=fmt(status.fan_rpm,0);
+    $('fan_out').textContent=fmt(status.fan_out*100,0); $('temp_c').textContent=fmt(status.temp_c,1);
+    $('rho').textContent=fmt(status.rho,3); $('vbus').textContent=fmt(status.vbus,1);
+    $('tared').innerHTML=status.tared?'<span class="ok">done</span>':'<span class="warn">needed</span>';
+    $('faults').innerHTML=status.faults?'<span class="fault">'+status.faults+'</span>':'<span class="ok">none</span>';
+    if(status.faults&&status.faults!==lastFaults)log('FAULT: '+status.faults+' (fan stopped)','fault');
+    lastFaults=status.faults;
+    const sr=await fetch('/api/samples?since='+lastSeq); const arr=await sr.json();
+    for(const s of arr){samples.push(s);liveLog.push(s);lastSeq=s.seq;}
+    if(samples.length>200)samples=samples.slice(-200);
+    if(liveLog.length>20000)liveLog=liveLog.slice(-20000);
+    drawChart();
+    if(status.sweep_n>0){$('sw_status').textContent='point '+(status.sweep_i+1)+' of '+status.sweep_n;$('sw_bar').style.width=(100*status.sweep_i/status.sweep_n)+'%';sweepWasRunning=true;}
+    else if(sweepWasRunning){sweepWasRunning=false;$('sw_bar').style.width='100%';$('sw_status').textContent='sweep finished';log('Sweep finished. '+status.sweep_points+' points.');loadSweep();}
+  }catch(e){$('conn').textContent='no connection';$('state').textContent='OFFLINE';$('state').className='state FAULT';}
+  setTimeout(poll,200);
+}
+function drawChart(){
+  const c=$('chart'),ctx=c.getContext('2d');c.width=c.clientWidth*devicePixelRatio;c.height=220*devicePixelRatio;ctx.scale(devicePixelRatio,devicePixelRatio);
+  const W=c.clientWidth,H=220;ctx.clearRect(0,0,W,H);if(samples.length<2)return;
+  const series=[['lift_n','#66E3FF',1000],['drag_n','#FFC66D',1000],['q_pa','#b8a1ff',1]];
+  ctx.strokeStyle='#223349';ctx.beginPath();for(let i=1;i<4;i++){ctx.moveTo(40,H*i/4);ctx.lineTo(W-8,H*i/4);}ctx.stroke();
+  let k=0;for(const [key,col,scale] of series){
+    const vals=samples.map(s=>s[key]*scale);let lo=Math.min(...vals),hi=Math.max(...vals);if(hi-lo<1e-6){hi=lo+1;}
+    ctx.strokeStyle=col;ctx.lineWidth=1.6;ctx.beginPath();
+    vals.forEach((v,i)=>{const x=40+(W-48)*i/(samples.length-1),y=H-10-(H-20)*(v-lo)/(hi-lo);i?ctx.lineTo(x,y):ctx.moveTo(x,y);});ctx.stroke();
+    ctx.fillStyle=col;ctx.font='11px system-ui';ctx.fillText(key.replace('_n',' mN').replace('_pa',' Pa')+' ['+lo.toFixed(1)+' … '+hi.toFixed(1)+']',44+k*170,12);k++;
+  }
+}
+function plotXY(id,pts,xl,yl){
+  const c=$(id),ctx=c.getContext('2d');c.width=c.clientWidth*devicePixelRatio;c.height=220*devicePixelRatio;ctx.scale(devicePixelRatio,devicePixelRatio);
+  const W=c.clientWidth,H=220;ctx.clearRect(0,0,W,H);ctx.fillStyle='#9FB3C8';ctx.font='11px system-ui';ctx.fillText(yl+' vs '+xl,8,12);
+  if(pts.length<1)return;const xs=pts.map(p=>p[0]),ys=pts.map(p=>p[1]);
+  let x0=Math.min(0,...xs),x1=Math.max(...xs),y0=Math.min(0,...ys),y1=Math.max(...ys);if(x1-x0<1e-9)x1=x0+1;if(y1-y0<1e-9)y1=y0+1;
+  const X=x=>44+(W-56)*(x-x0)/(x1-x0),Y=y=>H-20-(H-40)*(y-y0)/(y1-y0);
+  ctx.strokeStyle='#223349';ctx.beginPath();ctx.moveTo(X(x0),Y(0));ctx.lineTo(X(x1),Y(0));ctx.moveTo(X(0),Y(y0));ctx.lineTo(X(0),Y(y1));ctx.stroke();
+  ctx.fillText(x1.toFixed(2),W-40,H-6);ctx.fillText(y1.toFixed(2),4,24);ctx.fillText(y0.toFixed(2),4,H-22);
+  ctx.strokeStyle='#66E3FF';ctx.lineWidth=1.5;ctx.beginPath();pts.forEach((p,i)=>{i?ctx.lineTo(X(p[0]),Y(p[1])):ctx.moveTo(X(p[0]),Y(p[1]));});ctx.stroke();
+  ctx.fillStyle='#66E3FF';pts.forEach(p=>{ctx.beginPath();ctx.arc(X(p[0]),Y(p[1]),3,0,6.3);ctx.fill();if(p[2]){ctx.strokeStyle='#66E3FF88';ctx.beginPath();ctx.moveTo(X(p[0]),Y(p[1]-p[2]));ctx.lineTo(X(p[0]),Y(p[1]+p[2]));ctx.stroke();}});
+}
+let sweepRows=[];
+async function loadSweep(){
+  const r=await fetch('/api/sweep.json');sweepRows=await r.json();const S=+$('ref_area').value;
+  const tb=$('sw_table').querySelector('tbody');tb.innerHTML='';const p1=[],p2=[];
+  sweepRows.forEach((p,i)=>{const cl=p.q_pa>0?p.lift_n/(p.q_pa*S):0,cd=p.q_pa>0?p.drag_n/(p.q_pa*S):0;
+    const tr=document.createElement('tr');tr.innerHTML=`<td>${i}</td><td>${fmt(p.aoa_cmd,1)}</td><td>${fmt(p.aoa_deg,2)}</td><td>${fmt(p.q_pa,1)}</td><td>${fmt(p.v_ms,2)}</td><td>${fmt(p.lift_n*1000,1)}</td><td>${fmt(p.lift_sd*1000,1)}</td><td>${fmt(p.drag_n*1000,2)}</td><td>${fmt(p.drag_sd*1000,2)}</td><td>${fmt(cl,3)}</td><td>${fmt(cd,4)}</td><td>${p.n}</td>`;tb.appendChild(tr);
+    if(p.q_pa>0){p1.push([p.aoa_deg,cl,p.lift_sd/(p.q_pa*S)]);p2.push([cd,cl]);}});
+  plotXY('polar1',p1,'alpha (deg)','CL');plotXY('polar2',p2,'CD','CL');
+}
+function download(name,text){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'text/csv'}));a.download=name;a.click();}
+function meta(){const d=new Date().toISOString();return `# benairy_sweep_csv,1\n# run,${$('run_name').value}\n# model,${$('model_name').value}\n# ref_area_m2,${$('ref_area').value}\n# ref_chord_m,${$('ref_chord').value}\n# exported,${d}\n# source,${$('simtag').style.display==='none'?'hardware':'simulation'}\n`;}
+$('btn_csv').onclick=async()=>{const r=await fetch('/api/sweep.csv');download(`${$('run_name').value}_${$('model_name').value}_${Date.now()}.csv`,meta()+await r.text());};
+$('btn_live_csv').onclick=()=>{let t='seq,t_ms,lift_n,drag_n,q_pa,aoa_deg,fan_rpm\n';for(const s of liveLog)t+=`${s.seq},${s.t_ms},${s.lift_n},${s.drag_n},${s.q_pa},${s.aoa_deg},${s.fan_rpm}\n`;download(`live_${Date.now()}.csv`,meta()+t);};
+async function cmd(params,label){const r=await post(params);log((label||params.cmd)+': '+r.text,r.ok?'':'warn');return r;}
+$('btn_stop').onclick=()=>cmd({cmd:'stop'},'STOP');
+$('btn_clear').onclick=()=>cmd({cmd:'clear_faults'});
+$('fan_slider').oninput=e=>$('fan_slider_v').textContent=e.target.value+' %';
+$('btn_fan').onclick=()=>cmd({cmd:'fan',value:$('fan_slider').value/100},'fan '+$('fan_slider').value+' %');
+$('btn_aoa').onclick=()=>cmd({cmd:'aoa',value:$('aoa_in').value},'angle '+$('aoa_in').value);
+$('btn_tare').onclick=()=>cmd({cmd:'tare'});
+$('btn_zero').onclick=()=>cmd({cmd:'zero_aoa'});
+$('btn_sweep').onclick=()=>cmd({cmd:'sweep',list:$('sw_list').value,fan:$('sw_fan').value/100,settle:$('sw_settle').value,samples:$('sw_samples').value,updown:$('sw_updown').checked?1:0},'sweep');
+$('btn_sweep_stop').onclick=()=>cmd({cmd:'stop'},'stop sweep');
+async function loadCfg(){const r=await fetch('/api/config');const c=await r.json();const g=$('cfg');g.innerHTML='';
+  for(const k of Object.keys(c)){const d=document.createElement('div');d.innerHTML=`<label>${k}</label><br><input type="number" step="any" value="${c[k]}" id="cfg_${k}"> <button data-k="${k}">Save</button>`;g.appendChild(d);
+    d.querySelector('button').onclick=async e=>{await cmd({cmd:'set',key:k,value:$('cfg_'+k).value},'set '+k);};}}
+$('btn_cfg_reload').onclick=loadCfg;
+fetch('/api/info').then(r=>r.json()).then(i=>{$('fw').textContent=i.fw+(i.sim?' (simulation)':'');if(i.sim)$('simtag').style.display='';}).catch(()=>{});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')cmd({cmd:'stop'},'STOP (Esc)');});
+loadCfg();loadSweep();poll();log('Dashboard ready. Esc stops the fan.');
+})();
+</script>
+</body>
+</html>

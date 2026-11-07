@@ -57,7 +57,8 @@ P = {
     "strut_thick_m": 0.0035,
     "strut_exposed_m": 0.045,
     # Load cells (100 g bar cells with HX711)
-    "cell_rating_g": 100.0,
+    "cell_rating_g": 100.0,      # drag cell
+    "lift_cell_rating_g": 200.0, # lift cell (carries servo, drum, strut, model)
     "cell_noise_g_rms": 0.010,   # typical HX711 at 10 SPS, after 1 s average
     "cell_nonlin_pct_fs": 0.05,
     "cell_creep_pct_fs": 0.03,
@@ -196,8 +197,11 @@ def balance_budget(p, forces):
     u_force_g = math.sqrt(noise ** 2 + nonlin ** 2 + (0.5 * creep) ** 2)
     out = {"u_force_g_1sigma": u_force_g, "noise_g_rms": noise,
            "nonlinearity_g": nonlin, "creep_g": creep}
+    lift_rating = p["lift_cell_rating_g"]
+    u_lift_g = math.sqrt(noise ** 2 + (p["cell_nonlin_pct_fs"] / 100 * lift_rating) ** 2 + (0.5 * p["cell_creep_pct_fs"] / 100 * lift_rating) ** 2)
+    out["u_lift_g_1sigma"] = u_lift_g
     out["car_drag_rel_unc_pct"] = 100 * u_force_g / forces["car"]["drag_gf_at_CD0.5"]
-    out["wing_lift_rel_unc_pct"] = 100 * u_force_g / forces["wing"]["lift_gf_at_CL0.8"]
+    out["wing_lift_rel_unc_pct"] = 100 * u_lift_g / forces["wing"]["lift_gf_at_CL0.8"]
     out["wing_drag_rel_unc_pct_CD0.04"] = 100 * u_force_g / forces["wing"]["drag_gf_at_CD0.04"]
     return out
 
@@ -278,12 +282,13 @@ def main():
     lines.append(f"| 1:64 car | Frontal blockage | {c['blockage_pct']:.1f} % |")
     lines.append(f"| Strut, airfoil section | Drag (tare) | {s['drag_gf_airfoil']:.2f} gf |")
     lines.append(f"| Strut, round 3.5 mm rod | Drag (tare) | {s['drag_gf_round_rod']:.2f} gf |")
-    lines.append("\n## Balance budget (100 g cells, HX711, 1 s average)\n")
+    lines.append("\n## Balance budget (100 g drag cell, 200 g lift cell, HX711, 1 s average)\n")
     lines.append("| Quantity | Value |\n|---|---|")
     lines.append(f"| Noise, 1 sigma | {bal['noise_g_rms']:.3f} g |")
     lines.append(f"| Non-linearity | {bal['nonlinearity_g']:.3f} g |")
     lines.append(f"| Creep (half, after tare) | {0.5*bal['creep_g']:.3f} g |")
-    lines.append(f"| Combined force uncertainty, 1 sigma | {bal['u_force_g_1sigma']:.3f} g |")
+    lines.append(f"| Combined drag-cell uncertainty (100 g cell), 1 sigma | {bal['u_force_g_1sigma']:.3f} g |")
+    lines.append(f"| Combined lift-cell uncertainty (200 g cell), 1 sigma | {bal['u_lift_g_1sigma']:.3f} g |")
     lines.append(f"| Car drag, relative uncertainty | {bal['car_drag_rel_unc_pct']:.1f} % |")
     lines.append(f"| Wing lift at CL 0.8, relative uncertainty | {bal['wing_lift_rel_unc_pct']:.1f} % |")
     lines.append(f"| Wing drag at CD 0.04, relative uncertainty | {bal['wing_drag_rel_unc_pct_CD0.04']:.1f} % |")
