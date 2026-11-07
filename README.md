@@ -3,13 +3,23 @@
 **A desktop wind tunnel you print and build at home, with a two-component force balance for small wings and 1:64 cars.**
 By Schreiber AI.
 
-![Assembly](docs/images/assembly_iso.png)
+![Assembly](docs/images/hero.png)
 
 Benairy is an open-circuit suction tunnel with a 100 x 100 mm test section, about 9 m/s of airspeed, a lift and drag balance under the floor, a servo-driven angle of attack with a direct angle sensor, an ESP32 controller with a web dashboard, and Python tools that turn sweeps into corrected polar plots with uncertainty. Purchased parts cost 98 dollars. Every printed part fits a 256 mm bed.
 
-| | |
+![Section](docs/images/section.png)
+
+| Dashboard | Corrected polar with uncertainty |
 |---|---|
 | ![Dashboard](docs/images/dashboard_desktop.png) | ![Polar](docs/images/polar_example.png) |
+
+| Force balance | Car configuration |
+|---|---|
+| ![Balance](docs/images/balance.png) | ![Car](docs/images/car.png) |
+
+## Finish scheme
+
+Print the duct, stands, and bay in graphite or dark grey PETG. Print the bellmouth quarters, fan cowl, window clips, electronics lid, drum, and struts in a cyan or teal accent colour. The two-tone split follows the renders. All flanges and covers have 7 mm chamfered corners, the fan sits inside a cowl with an integrated exit grille, and the covers close with magnets.
 
 ## Try it without hardware
 

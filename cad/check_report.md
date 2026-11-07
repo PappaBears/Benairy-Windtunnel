@@ -3,18 +3,18 @@
 | Part | Qty | Print size x,y,z (mm) | Fits 256 bed | Watertight | Overhang area >45 deg | Note |
 |---|---|---|---|---|---|---|
 | bellmouth_quarter | 4 | 125.0, 125.0, 22.0 | yes | yes | 0.0 % (0 mm2) | Print 4. Flat face down. |
-| settling_chamber | 1 | 220.0, 220.0, 100.0 | yes | yes | 3.4 % (6675 mm2) | Open end up. No supports. |
+| settling_chamber | 1 | 220.0, 220.0, 100.0 | yes | yes | 3.4 % (6586 mm2) | Open end up. No supports. |
 | honeycomb | 1 | 199.0, 199.0, 36.0 | yes | yes | 0.0 % (0 mm2) | 941 hexagonal cells. Print with 0.4 mm nozzle, 2 walls, no infill. |
 | screen_frame | 2 | 199.0, 199.0, 2.5 | yes | yes | 0.0 % (0 mm2) | Print 2. Glue mesh on the downstream face. |
 | spacer_12 | 2 | 199.0, 199.0, 12.0 | yes | yes | 0.0 % (0 mm2) | Print 2. |
 | spacer_28 | 1 | 199.0, 199.0, 28.0 | yes | yes | 0.0 % (0 mm2) | Print 1. |
-| contraction_1 | 1 | 220.0, 220.0, 100.0 | yes | yes | 3.7 % (6677 mm2) | Large end down. |
-| contraction_2 | 1 | 170.0, 170.0, 100.0 | yes | yes | 5.1 % (6062 mm2) | Large end down. |
-| test_section_1 | 1 | 120.0, 120.0, 120.0 | yes | yes | 3.1 % (3553 mm2) | Stand on a flange. Drill the 1.2 mm taps clean. |
-| test_section_2 | 1 | 120.0, 120.0, 130.0 | yes | yes | 3.7 % (3832 mm2) | Stand on a flange. Window openings need no support when printed vertically. |
+| contraction_1 | 1 | 220.0, 220.0, 100.0 | yes | yes | 3.6 % (6588 mm2) | Large end down. |
+| contraction_2 | 1 | 170.0, 170.0, 100.0 | yes | yes | 5.0 % (5973 mm2) | Large end down. |
+| test_section_1 | 1 | 120.0, 120.0, 120.0 | yes | yes | 3.0 % (3464 mm2) | Stand on a flange. Drill the 1.2 mm taps clean. |
+| test_section_2 | 1 | 120.0, 120.0, 130.0 | yes | yes | 3.7 % (3742 mm2) | Stand on a flange. Window openings need no support when printed vertically. |
 | window_clip | 2 | 118.0, 92.0, 3.0 | yes | yes | 0.0 % (0 mm2) | Print 2. Flat side down. |
-| diffuser | 1 | 130.0, 130.0, 150.0 | yes | yes | 2.5 % (3495 mm2) | Fan plate up. 4 hex nut traps face the duct. |
-| fan_guard | 1 | 130.0, 130.0, 6.0 | yes | yes | 0.0 % (0 mm2) | Flat side down. |
+| diffuser | 1 | 130.0, 130.0, 150.0 | yes | yes | 2.5 % (3405 mm2) | Fan plate up. 4 hex nut traps face the duct. |
+| fan_guard | 1 | 130.0, 130.0, 44.0 | yes | yes | 11.3 % (7885 mm2) | Grille face down, open side up. No supports. |
 | balance_bay | 1 | 120.0, 106.0, 80.0 | yes | yes | 2.7 % (2854 mm2) | Open side up. Stop fingers need supports. |
 | platform | 1 | 46.0, 48.3, 24.0 | yes | yes | 21.3 % (1485 mm2) | Plate down, hanger up. Supports under the hanger and posts. |
 | bracket | 1 | 29.4, 24.0, 17.0 | yes | yes | 24.0 % (616 mm2) | Arm down. Supports under the block overhang. |
@@ -26,15 +26,15 @@
 | wing_flat_plate | 1 | 34.0, 80.0, 9.5 | yes | yes | 1.0 % (66 mm2) | Upside down, pylon up. |
 | car_tray | 1 | 75.0, 32.0, 13.0 | yes | yes | 35.9 % (2121 mm2) | Flat. Supports under the neck. |
 | ground_board | 1 | 90.0, 99.0, 11.5 | yes | yes | 0.5 % (101 mm2) | Upside down (pegs up). |
-| stand_settling | 1 | 40.0, 216.0, 42.0 | yes | yes | 30.2 % (8160 mm2) | Flat. |
-| stand_test_section | 1 | 40.0, 116.0, 92.0 | yes | yes | 15.4 % (4160 mm2) | Flat. |
-| stand_fan | 1 | 30.0, 146.0, 75.0 | yes | yes | 18.8 % (3900 mm2) | Flat. |
+| stand_settling | 1 | 40.0, 224.0, 42.0 | yes | yes | 31.0 % (8560 mm2) | Flat. |
+| stand_test_section | 1 | 40.0, 124.0, 92.0 | yes | yes | 16.2 % (4560 mm2) | Flat. |
+| stand_fan | 1 | 30.0, 148.0, 75.0 | yes | yes | 19.1 % (3953 mm2) | Flat. |
 | tap_barb | 6 | 8.0, 8.0, 12.0 | yes | yes | 1.6 % (6 mm2) | Print 6. Flange down. |
 | pitot_wand | 1 | 25.0, 86.3, 14.0 | yes | yes | 20.0 % (483 mm2) | On its side so the 1.5 mm channels print clean. |
 | probe_plug | 1 | 10.0, 10.0, 4.5 | yes | yes | 0.0 % (0 mm2) | Cap down. |
 | zero_gauge | 1 | 30.0, 10.0, 30.0 | yes | yes | 12.0 % (260 mm2) | Flat. |
-| electronics_box | 1 | 114.8, 79.8, 37.4 | yes | yes | 0.1 % (62 mm2) | Open side up. |
-| electronics_lid | 1 | 114.8, 79.8, 5.0 | yes | yes | 0.0 % (0 mm2) | Flat side down. |
+| electronics_box | 1 | 114.8, 79.8, 37.4 | yes | yes | 0.1 % (65 mm2) | Open side up. |
+| electronics_lid | 1 | 114.8, 79.8, 3.4 | yes | yes | 0.0 % (0 mm2) | Flat side down. |
 | cam_clip | 1 | 44.0, 32.0, 6.0 | yes | yes | 12.5 % (548 mm2) | Optional. Flat side down. |
 
 ## Interference (assembly frame)
@@ -45,7 +45,6 @@ No overlaps larger than 1.0 mm3 between any two parts. Touching faces are allowe
 
 | A | B | Axis | Gap (mm) | Note |
 |---|---|---|---|---|
-| ref_fan | fan_guard | x | 0.00 | fan to guard (should touch: 0) |
 | ref_servo | floor underside | z | 7.00 | servo body to floor underside |
 | drum | floor underside | z | 3.00 | drum top to floor underside |
 | ref_as5600 | floor underside | z | 2.00 | sensor board top to floor underside |

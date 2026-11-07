@@ -124,7 +124,6 @@ def main():
         # signed distance between the two boxes along axis (positive = clear)
         g = max(mb.bounds[0][axis] - ma.bounds[1][axis], ma.bounds[0][axis] - mb.bounds[1][axis])
         checks.append((a, b, "xyz"[axis], g, note))
-    gap("ref_fan", "fan_guard", 0, "fan to guard (should touch: 0)")
     top_gap("ref_servo", floor_bot, "servo body to floor underside")
     top_gap("drum", floor_bot, "drum top to floor underside")
     top_gap("ref_as5600", floor_bot, "sensor board top to floor underside")
@@ -133,7 +132,7 @@ def main():
     gap("ref_servo", "ref_drag_cell", 0, "servo to drag cell (x)")
     gap("ref_servo", "ref_lift_cell", 2, "servo body to lift cell (z)")
     for a, b, ax, g, note in checks:
-        if g < 0.4 and "touch" not in note:
+        if g < 0.4:
             report["ok"] = False
     lines.append("| A | B | Axis | Gap (mm) | Note |\n|---|---|---|---|---|")
     for a, b, ax, g, note in checks:

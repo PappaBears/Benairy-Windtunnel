@@ -56,6 +56,7 @@ PARAMS = {
     "flange_w": 8.0,
     "flange_t": 3.2,
     "bolt_d": 3.4,              # M3 clearance
+    "chamfer": 7.0,             # corner chamfer on flanges, covers and stands
     "bell_r": 22.0,             # bellmouth lip radius
     "bell_t": 22.0,
     "bell_outer_half": 125.0,
@@ -192,11 +193,17 @@ def flange_hole_points(half):
     return pts
 
 
+def octagon(half, c):
+    """Square of half width `half` with 45-degree corner chamfers of size c (2-D points)."""
+    return [(-half + c, -half), (half - c, -half), (half, -half + c), (half, half - c),
+            (half - c, half), (-half + c, half), (-half, half - c), (-half, -half + c)]
+
+
 def flange(x0, half, holes=True, t=None, extra_hole_d=None):
     """Square flange plate from x0 to x0+t with the duct opening."""
     t = P["flange_t"] if t is None else t
     outer = half + P["wall"] + P["flange_w"]
-    s = K.box(t, 2 * outer, 2 * outer, (x0, -outer, -outer))
+    s = K.prism(octagon(outer, P["chamfer"]), t, plane="yz", offset=x0)
     s = K.cut(s, K.box(t + 2, 2 * half, 2 * half, (x0 - 1, -half, -half)))
     if holes:
         d = extra_hole_d or P["bolt_d"]
@@ -445,7 +452,11 @@ def part_window_clip():
     yo = P["ts_half"] + P["wall"] + P["window_boss"]
     t = 3.0
     ox0, ox1 = wx0 - m - 9, wx1 + m + 9
-    s = K.box(ox1 - ox0, t, 2 * (wz + m + 9), (ox0, yo, -wz - m - 9))
+    hx, hz, c = (ox1 - ox0) / 2, wz + m + 9, 6.0
+    cx = (ox0 + ox1) / 2
+    s = K.prism([(cx + px, pz) for px, pz in [(-hx + c, -hz), (hx - c, -hz), (hx, -hz + c), (hx, hz - c),
+                                               (hx - c, hz), (-hx + c, hz), (-hx, hz - c), (-hx, -hz + c)]],
+                t, plane="xz", offset=yo)
     s = K.cut(s, K.box(wx1 - wx0 + 4, t + 2, 2 * (wz + 2), (wx0 - 2, yo - 1, -wz - 2)))
     md, mt = P["magnet_d"] + 0.3, P["magnet_t"] + 0.2
     for px in (wx0 - m - 6, wx1 + m + 6):
@@ -495,30 +506,32 @@ def part_diffuser():
 
 
 def part_fan_guard():
+    """Fan cowl: encloses the fan sides, carries the exit grille, bolts to the fan plate."""
     fp, rf = P["fan_plate_half"], P["fan_bore"] / 2
-    t = P["guard_t"]
-    x0 = X_FAN1
-    s = K.box(t, 2 * fp, 2 * fp, (x0, -fp, -fp))
-    s = K.cut(s, K.cyl(rf, t + 2, (x0 - 1, 0, 0), "x"))
+    face_t = P["guard_t"]
+    x0, x1 = X_DIFF1, X_FAN1 + face_t
+    s = K.prism(octagon(fp, P["chamfer"]), x1 - x0, plane="yz", offset=x0)
+    ff = P["fan_frame"] / 2 + 0.5
+    s = K.cut(s, K.box(X_FAN1 - x0 + 1, 2 * ff, 2 * ff, (x0 - 1, -ff, -ff)))     # fan pocket
+    s = K.cut(s, K.cyl(rf, 20, (X_FAN1 - 1, 0, 0), "x"))                            # exit opening
+    s = K.cut(s, K.box(2 * fp + 2, 16.0, 12.0, (x0 - 1, -fp - 1, -6.0)))          # cable notch, -y side
     hp = P["fan_hole_pitch"] / 2
     for sy in (-1, 1):
         for sz in (-1, 1):
-            s = K.cut(s, K.cyl(P["fan_bolt_d"] / 2, 20, (x0 - 10, sy * hp, sz * hp), "x"))
-    # grille: rings and spokes, 3 mm thick, flush with the upstream face
+            s = K.cut(s, K.cyl(P["fan_bolt_d"] / 2, 60, (x0 - 10, sy * hp, sz * hp), "x"))
+    # exit grille: hub, rings and spokes, flush with the fan side of the face
     gt = 3.0
     bar = P["guard_bar"]
-    hub = K.cyl(14.0, gt, (x0, 0, 0), "x")
-    grid = hub
+    grid = K.cyl(14.0, gt, (X_FAN1, 0, 0), "x")
     for i in range(1, P["guard_rings"] + 1):
         r = 14.0 + (rf + 1.0 - 14.0) * i / P["guard_rings"]
-        ring = K.cut(K.cyl(r + bar / 2, gt, (x0, 0, 0), "x"), K.cyl(r - bar / 2, gt + 2, (x0 - 1, 0, 0), "x"))
+        ring = K.cut(K.cyl(r + bar / 2, gt, (X_FAN1, 0, 0), "x"), K.cyl(r - bar / 2, gt + 2, (X_FAN1 - 1, 0, 0), "x"))
         grid = K.fuse(grid, ring)
     for k in range(P["guard_spokes"]):
         a = 2 * math.pi * k / P["guard_spokes"]
-        spoke = K.box(gt, bar, rf + 2, (x0, -bar / 2, 0))
-        spoke = K.rotate(spoke, (x0, 0, 0), "x", math.degrees(a))
-        grid = K.fuse(grid, spoke)
-    grid = K.common(grid, K.cyl(rf + 1.5, gt, (x0, 0, 0), "x"))
+        spoke = K.box(gt, bar, rf + 2, (X_FAN1, -bar / 2, 0))
+        grid = K.fuse(grid, K.rotate(spoke, (X_FAN1, 0, 0), "x", math.degrees(a)))
+    grid = K.common(grid, K.cyl(rf + 1.5, gt, (X_FAN1, 0, 0), "x"))
     return K.fuse(s, grid)
 
 
@@ -765,16 +778,20 @@ def part_ground_board():
     return s
 
 
+def arch_profile(half, z0, z1, c):
+    """Arch outline in the y-z plane with chamfered top corners (points for a prism)."""
+    return [(-half, z0), (half, z0), (half, z1 - c), (half - c, z1), (-half + c, z1), (-half, z1 - c)]
+
+
 def part_stand(x0, width_outer, bottom_z, name):
-    """Arch stand: 6 mm legs, 5 mm top bar, two cheeks that grip the duct sides."""
+    """Arch stand: chamfered profile, 7 mm legs, 5 mm top bar, cheeks that grip the duct."""
     L = 40.0
-    h = bottom_z - P["table_z"]
-    half = width_outer / 2 + 6.0
-    s = K.box(L, 2 * half, h, (x0, -half, P["table_z"]))
-    s = K.cut(s, K.box(L + 2, 2 * half - 12.0, h - 5.0, (x0 - 1, -half + 6.0, P["table_z"] - 1)))
+    half = width_outer / 2 + 10.0
+    s = K.prism(arch_profile(half, P["table_z"], bottom_z, P["chamfer"]), L, plane="yz", offset=x0)
+    s = K.cut(s, K.box(L + 2, 2 * half - 16.0, (bottom_z - 5.0) - P["table_z"] + 1, (x0 - 1, -half + 8.0, P["table_z"] - 1)))
     for sgn in (-1, 1):
-        cheek = K.box(L, 6.0, 12.0, (x0, sgn * (width_outer / 2) - (0 if sgn > 0 else 6.0), bottom_z))
-        s = K.fuse(s, cheek)
+        y0 = width_outer / 2 if sgn > 0 else -width_outer / 2 - 6.0
+        s = K.fuse(s, K.box(L, 6.0, 12.0, (x0, y0, bottom_z)))
     return s
 
 
@@ -784,10 +801,9 @@ def part_fan_stand():
     bottom = -fp
     L = 30.0
     x0 = X_FAN_PLATE0 - (L - P["fan_plate_t"]) / 2
-    h = bottom - P["table_z"]
-    half = fp + 8.0
-    s = K.box(L, 2 * half, h, (x0, -half, P["table_z"]))
-    s = K.cut(s, K.box(L + 2, 2 * half - 16.0, h - 5.0, (x0 - 1, -half + 8.0, P["table_z"] - 1)))
+    half = fp + 9.0
+    s = K.prism(arch_profile(half, P["table_z"], bottom, P["chamfer"]), L, plane="yz", offset=x0)
+    s = K.cut(s, K.box(L + 2, 2 * half - 18.0, (bottom - 5.0) - P["table_z"] + 1, (x0 - 1, -half + 9.0, P["table_z"] - 1)))
     for sy in (-1, 1):
         for (fx0, fx1) in ((X_FAN_PLATE0 - 2.5, X_FAN_PLATE0 - 0.3), (X_DIFF1 + 0.3, X_DIFF1 + 2.5)):
             y0 = fp if sy > 0 else -fp - 8.0
@@ -830,39 +846,44 @@ def part_zero_gauge():
     return s
 
 
+def _ebox_outline(x0, y0, ix, iy, w, c=6.0):
+    hx, hy = ix / 2 + w, iy / 2 + w
+    cx, cy = x0 + hx, y0 + hy
+    return [(cx + px, cy + py) for px, py in [(-hx + c, -hy), (hx - c, -hy), (hx, -hy + c), (hx, hy - c),
+                                               (hx - c, hy), (-hx + c, hy), (-hx, hy - c), (-hx, -hy + c)]]
+
+
+EBOX_AT = (-120.0, 80.0)
+
+
 def part_ebox():
     ix, iy, iz = P["ebox_inner"]
     w = P["ebox_wall"]
-    x0, y0, z0 = -120.0, 80.0, P["table_z"]
-    s = K.box(ix + 2 * w, iy + 2 * w, iz + w, (x0, y0, z0))
+    x0, y0, z0 = EBOX_AT[0], EBOX_AT[1], P["table_z"]
+    s = K.prism(_ebox_outline(x0, y0, ix, iy, w), iz + w, plane="xy", offset=z0)
     s = K.cut(s, K.box(ix, iy, iz + 1, (x0 + w, y0 + w, z0 + w)))
-    # card slots for an ESP32 DevKit (28.5 wide) and two HX711 boards (21 wide)
-    for (cx, cw) in ((x0 + w + 10, 28.5), (x0 + w + 50, 21.0), (x0 + w + 80, 21.0)):
-        for sgn in (0, 1):
-            rail = K.box(2.0, 6.0, iz - 4, (cx + sgn * (cw + 2.0), y0 + w, z0 + w))
-            s = K.fuse(s, rail)
-            rail2 = K.box(2.0, 6.0, iz - 4, (cx + sgn * (cw + 2.0), y0 + w + iy - 6.0, z0 + w))
-            s = K.fuse(s, rail2)
-    # USB and cable cut-outs
-    s = K.cut(s, K.box(14.0, w + 2, 9.0, (x0 + w + 10 + 7.0, y0 - 1, z0 + w + 4)))
-    s = K.cut(s, K.box(w + 2, 12.0, 8.0, (x0 + w + ix - 1, y0 + w + iy / 2 - 6, z0 + w + 2)))
-    # magnet pockets in the rim for the lid
     md, mt = P["magnet_d"] + 0.3, P["magnet_t"] + 0.2
-    for (mx, my) in ((x0 + w / 2 + 2, y0 + w / 2 + 2), (x0 + ix + 1.5 * w - 2, y0 + w / 2 + 2),
-                     (x0 + w / 2 + 2, y0 + iy + 1.5 * w - 2), (x0 + ix + 1.5 * w - 2, y0 + iy + 1.5 * w - 2)):
-        pass
+    for (bx, by) in ((x0 + w, y0 + w), (x0 + w + ix - 8, y0 + w), (x0 + w, y0 + w + iy - 8), (x0 + w + ix - 8, y0 + w + iy - 8)):
+        s = K.fuse(s, K.box(8.0, 8.0, iz, (bx, by, z0 + w)))
+        s = K.cut(s, K.cyl(md / 2, mt, (bx + 4.0, by + 4.0, z0 + w + iz - mt), "z"))
+    for (cx, cw) in ((x0 + w + 12, 28.5), (x0 + w + 52, 21.0), (x0 + w + 82, 21.0)):   # card slots
+        for sgn in (0, 1):
+            for yy in (y0 + w, y0 + w + iy - 6.0):
+                s = K.fuse(s, K.box(2.0, 6.0, iz - 4, (cx + sgn * (cw + 2.0), yy, z0 + w)))
+    s = K.cut(s, K.box(14.0, w + 2, 9.0, (x0 + w + 12 + 7.0, y0 - 1, z0 + w + 4)))          # USB
+    s = K.cut(s, K.box(w + 2, 12.0, 8.0, (x0 + w + ix - 1, y0 + w + iy / 2 - 6, z0 + w + 2)))  # cables
     return s
 
 
 def part_ebox_lid():
     ix, iy, iz = P["ebox_inner"]
     w = P["ebox_wall"]
-    x0, y0, z0 = -120.0, 80.0, P["table_z"]
+    x0, y0, z0 = EBOX_AT[0], EBOX_AT[1], P["table_z"]
     top = z0 + iz + w
-    s = K.box(ix + 2 * w, iy + 2 * w, 2.0, (x0, y0, top))
-    inner = K.box(ix - 0.4, iy - 0.4, 3.0, (x0 + w + 0.2, y0 + w + 0.2, top - 3.0))
-    s = K.fuse(s, inner)
-    s = K.cut(s, K.box(ix - 0.4 - 2 * 2.0, iy - 0.4 - 2 * 2.0, 3.5, (x0 + w + 2.2, y0 + w + 2.2, top - 3.5)))
+    md, mt = P["magnet_d"] + 0.3, P["magnet_t"] + 0.2
+    s = K.prism(_ebox_outline(x0, y0, ix, iy, w), mt + 1.2, plane="xy", offset=top)
+    for (bx, by) in ((x0 + w, y0 + w), (x0 + w + ix - 8, y0 + w), (x0 + w, y0 + w + iy - 8), (x0 + w + ix - 8, y0 + w + iy - 8)):
+        s = K.cut(s, K.cyl(md / 2, mt, (bx + 4.0, by + 4.0, top - 0.01), "z"))
     return s
 
 
@@ -951,7 +972,7 @@ def build_all(verbose=True):
     log("test section 2"); add("test_section_2", part_ts2(), [("y", 90)], "Stand on a flange. Window openings need no support when printed vertically.")
     add("window_clip", part_window_clip(), [("x", -90)], "Print 2. Flat side down.", qty=2)
     log("diffuser"); add("diffuser", part_diffuser(), [("y", 90)], "Fan plate up. 4 hex nut traps face the duct.")
-    log("fan guard"); add("fan_guard", part_fan_guard(), [("y", -90)], "Flat side down.")
+    log("fan guard"); add("fan_guard", part_fan_guard(), [("y", -90)], "Grille face down, open side up. No supports.")
     log("balance bay"); add("balance_bay", part_bay(), [], "Open side up. Stop fingers need supports.")
     log("platform"); add("platform", part_platform(), [], "Plate down, hanger up. Supports under the hanger and posts.")
     add("bracket", part_bracket(), [], "Arm down. Supports under the block overhang.")

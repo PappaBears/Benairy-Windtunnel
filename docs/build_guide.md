@@ -20,7 +20,7 @@ Print settings: 0.4 mm nozzle, 0.2 mm layers, 3 walls, 15 % infill. Use PETG for
 | test_section_1, test_section_2 | 1 each | Stand on a flange. |
 | window_clip | 2 | |
 | diffuser | 1 | Fan plate up. |
-| fan_guard | 1 | |
+| fan_guard | 1 | Fan cowl with exit grille. Open side up. |
 | balance_bay | 1 | Open side up. Supports under the stop fingers. |
 | platform, bracket, drum | 1 each | Supports as noted in the check report. |
 | strut_long, strut_short | 1 each | Vertical, with a brim. |
@@ -42,7 +42,7 @@ Check the printed load cell pockets before you continue. Measure your load cells
 4. Bolt the segments together in order: settling chamber, contraction 1, contraction 2, test section 1, test section 2, diffuser. Use M3 x 12 screws and nuts at each flange. Put a bead of silicone or a strip of foam tape on each flange face.
 5. Glue a tap barb over each 1.2 mm hole: three on test section 1 at 20 mm, one on the contraction inlet at the top, one on test section 2 at the model station. Use thick CA glue. Keep the glue out of the hole.
 6. Cut two window sheets 100 x 74 mm. Push each into its recess. Put four magnets in the wall pockets and four in each window clip. Check that the poles attract. Put the clips on.
-7. Mount the fan on the diffuser plate with four M4 x 50 screws. The fan label faces downstream. The air must flow out of the tunnel. Put the fan guard on the same screws, downstream of the fan.
+7. Put the fan in the cowl. The fan label faces the grille. Put the cowl with the fan on the diffuser plate. Fix it with four M4 x 50 screws through the grille face, the fan, and the plate. The air must flow out of the tunnel.
 8. Put the stands under the settling chamber, under test section 1, and under the fan plate. The balance bay is the fourth support.
 
 WARNING: Do not run the fan without the guard. The fan turns at 8000 rpm.
