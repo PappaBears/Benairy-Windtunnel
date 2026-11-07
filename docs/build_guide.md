@@ -42,8 +42,9 @@ Check the printed load cell pockets before you continue. Measure your load cells
 4. Bolt the segments together in order: settling chamber, contraction 1, contraction 2, test section 1, test section 2, diffuser. Use M3 x 12 screws and nuts at each flange. Put a bead of silicone or a strip of foam tape on each flange face.
 5. Glue a tap barb over each 1.2 mm hole: three on test section 1 at 20 mm, one on the contraction inlet at the top, one on test section 2 at the model station. Use thick CA glue. Keep the glue out of the hole.
 6. Cut two window sheets 100 x 74 mm. Push each into its recess. Put four magnets in the wall pockets and four in each window clip. Check that the poles attract. Put the clips on.
-7. Put the fan in the cowl. The fan label faces the grille. Put the cowl with the fan on the diffuser plate. Fix it with four M4 x 50 screws through the grille face, the fan, and the plate. The air must flow out of the tunnel.
-8. Put the stands under the settling chamber, under test section 1, and under the fan plate. The balance bay is the fourth support.
+7. Cut two WS2812B strips of 12 LEDs. Stick one in each light bar on top of test section 2, LEDs facing down. Solder the data out of the first bar to the data in of the second. Lead the three wires out through the notch at the downstream end. The 1 mm printed floor under the strip is the diffuser: print test section 2 in natural or white PETG for the most light, or in a dark colour for a dimmer, more even glow.
+8. Put the fan in the cowl. The fan label faces the grille. Put the cowl with the fan on the diffuser plate. Fix it with four M4 x 50 screws through the grille face, the fan, and the plate. The air must flow out of the tunnel.
+9. Put the stands under the settling chamber, under test section 1, and under the fan plate. The balance bay is the fourth support.
 
 WARNING: Do not run the fan without the guard. The fan turns at 8000 rpm.
 
@@ -81,6 +82,7 @@ Put the ESP32 and the two HX711 boards in the electronics box. Keep the HX711 bo
 | GPIO 32, 33 | HX711 lift: DT, SCK | |
 | GPIO 34, 14 | HX711 drag: DT, SCK | GPIO 34 is input only, which is fine for DT |
 | GPIO 4 | Stop switch loop to GND | Normally closed. Open = stop. Use a mushroom button or a wire link. |
+| GPIO 13 | LED strip data in, through 330 Ω | Two 12-LED WS2812B bars in series. 5 V and GND from the USB supply, 1000 µF capacitor across the strip supply. |
 | GPIO 35 | 12 V bus through 47 kΩ / 10 kΩ divider | Reads the fan supply |
 | GND | All grounds, including the 12 V supply negative | One star point |
 
@@ -122,4 +124,5 @@ The firmware was built and tested on the host (`firmware/test_host`, 10 tests). 
 3. Press "Set angle" at 0, 10, and -10 degrees. The strut must move about 20 degrees between the end points. If it moves the wrong way, set `aoa_sign` to -1 in the settings.
 4. Put the zero gauge on the floor against the strut. Press "Set angle zero".
 5. Connect the 12 V supply. Set the fan to 30 %. The fan tile must show about 2400 rpm within 2 seconds. If it shows 0, check the tach pull-up. The firmware stops the fan after 3 seconds without a tach signal.
-6. Open the stop loop. The state must change to FAULT and the fan must stop at once.
+6. Open the stop loop. The state must change to FAULT and the fan must stop at once. The light bars flash red.
+7. Check the lighting: dim white in IDLE, cyan when the fan runs, amber filling along the bars during a sweep. Set the brightness in the dashboard. Keep it at or below 60 % if the ESP32 runs from a 2 A USB supply.

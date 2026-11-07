@@ -124,3 +124,21 @@ def test_client_watchdog(sim):
     assert "CLIENT_TIMEOUT" in s["faults"] and s["fan_out"] == 0
     sim.post("/api/cmd", cmd="clear_faults")
     sim.post("/api/cmd", cmd="set", key="client_timeout_s", value=10)
+
+
+def test_lighting_follows_state(sim):
+    sim.post("/api/cmd", cmd="clear_faults"); sim.post("/api/cmd", cmd="stop")
+    time.sleep(0.2)
+    s = sim.getj("/api/status"); assert len(s["leds"]) == 24 * 6
+    idle = s["leds"][:6]
+    assert sim.post("/api/cmd", cmd="fan", value=0.8)[0] == 200
+    time.sleep(0.3)
+    run = sim.getj("/api/status")["leds"][:6]
+    assert run != idle and int(run[4:6], 16) > int(run[0:2], 16)          # cyan: blue > red
+    sim.post("/api/sim", estop="1"); time.sleep(0.2)
+    f = sim.getj("/api/status")["leds"][:6]
+    assert int(f[0:2], 16) > int(f[4:6], 16)                               # fault: red
+    sim.post("/api/sim", estop="0"); sim.post("/api/cmd", cmd="clear_faults")
+    assert sim.post("/api/cmd", cmd="light", value=0)[0] == 200
+    time.sleep(0.2); assert sim.getj("/api/status")["leds"] == "000000" * 24
+    sim.post("/api/cmd", cmd="light", value=1)

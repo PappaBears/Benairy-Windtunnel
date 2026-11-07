@@ -47,6 +47,15 @@
     "magnet_d": 6.0,
     "magnet_t": 2.0,
     "tap_d": 1.2,
+    "led_bar_y": 20.0,
+    "led_bar_x": [
+      140.0,
+      240.0
+    ],
+    "led_bar_w": 16.0,
+    "led_bar_h": 4.0,
+    "led_slot_w": 10.6,
+    "led_floor_t": 1.0,
     "probe_hole_d": 5.0,
     "model_x": 185.0,
     "slot_x_half": 15.0,
@@ -463,7 +472,7 @@
         60.0,
         60.0
       ],
-      "volume_mm3": 126462.4,
+      "volume_mm3": 129014.4,
       "valid": true,
       "print_bbox": [
         -60.0,
@@ -1370,6 +1379,42 @@
         -54.0
       ],
       "volume_mm3": 774.4,
+      "valid": true
+    },
+    "ref_led_strip_R": {
+      "reference": true,
+      "note": "WS2812B strip, 12 LEDs",
+      "qty": 1,
+      "configs": [
+        "all"
+      ],
+      "assembly_bbox": [
+        143.0,
+        15.0,
+        51.05,
+        237.0,
+        25.0,
+        53.65
+      ],
+      "volume_mm3": 2444.0,
+      "valid": true
+    },
+    "ref_led_strip_L": {
+      "reference": true,
+      "note": "WS2812B strip, 12 LEDs",
+      "qty": 1,
+      "configs": [
+        "all"
+      ],
+      "assembly_bbox": [
+        143.0,
+        -25.0,
+        51.05,
+        237.0,
+        -15.0,
+        53.65
+      ],
+      "volume_mm3": 2444.0,
       "valid": true
     }
   }

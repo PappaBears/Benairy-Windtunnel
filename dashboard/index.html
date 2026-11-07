@@ -74,6 +74,8 @@ details summary{cursor:pointer;color:var(--muted);font-size:12px;text-transform:
 .legend i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:6px;vertical-align:middle}
 .kbd{font:11px ui-monospace,Menlo,monospace;background:#1b2d47;border:1px solid var(--line);border-radius:4px;padding:1px 5px;color:var(--muted)}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.strip{display:grid;grid-template-columns:repeat(24,1fr);gap:3px;margin:8px 0 2px;padding:6px;background:var(--panel2);border-radius:8px}
+.strip i{display:block;height:10px;border-radius:3px;background:#1b2d47;box-shadow:0 0 6px 0 transparent;transition:background .15s,box-shadow .15s}
 @media (max-width:700px){.two{grid-template-columns:1fr}input[type=text].wide{width:100%}}
 </style>
 </head>
@@ -118,6 +120,9 @@ details summary{cursor:pointer;color:var(--muted);font-size:12px;text-transform:
   <div class="row"><label>Fan</label><input type="range" id="fan_slider" min="0" max="100" value="0"><span id="fan_slider_v" style="min-width:40px">0 %</span><button id="btn_fan" class="primary">Set fan</button></div>
   <div class="row"><label>Angle of attack</label><input type="number" id="aoa_in" value="0" step="0.5"><label>deg</label><button id="btn_aoa">Set angle</button></div>
   <div class="row"><button id="btn_tare" class="primary">Tare, wind off</button><button id="btn_zero">Set angle zero</button></div>
+  <div class="row" style="margin-top:12px"><label>Lighting</label><button id="btn_light">Light on</button><button id="btn_light_off">Light off</button>
+    <label>Brightness</label><input type="range" id="led_b" min="5" max="100" value="40" style="width:140px"><span id="led_b_v" style="min-width:36px">40 %</span></div>
+  <div class="strip" id="strip" title="Light bar colours: cyan running, amber sweep progress, red fault, white tare"></div>
   <p style="color:var(--muted);font-size:12px;margin:8px 0 0">Do the tare with the fan off and the model installed. Set the angle zero with the zero gauge against the strut.</p>
 </section>
 
@@ -180,6 +185,7 @@ async function poll(){
     $('faults').innerHTML=status.faults?'<span class="fault">'+status.faults+'</span>':'<span class="ok">none</span>';
     const b=$('banner');if(status.faults){b.className='on';$('banner_t').textContent='Fan stopped by a fault: '+status.faults.replace(/,/g,', ')+'. Fix the cause, then clear the faults.';}else b.className='';
     if(status.faults&&status.faults!==lastFaults)log('FAULT: '+status.faults+' (fan stopped)','fault');
+    if(status.leds){const st=$('strip');if(st.children.length!==24){st.innerHTML='<i></i>'.repeat(24);}for(let i=0;i<24;i++){const c='#'+status.leds.substr(6*i,6);st.children[i].style.background=c;st.children[i].style.boxShadow='0 0 8px 1px '+c+'88';}}
     lastFaults=status.faults;
     const sr=await fetch('/api/samples?since='+lastSeq);const arr=await sr.json();
     for(const s of arr){samples.push(s);liveLog.push(s);lastSeq=s.seq;}
@@ -243,6 +249,10 @@ $('btn_fan').onclick=()=>cmd({cmd:'fan',value:$('fan_slider').value/100},'fan '+
 $('btn_aoa').onclick=()=>cmd({cmd:'aoa',value:$('aoa_in').value},'angle '+$('aoa_in').value);
 $('btn_tare').onclick=()=>cmd({cmd:'tare'});
 $('btn_zero').onclick=async()=>{const r=await cmd({cmd:'zero_aoa'});if(r.ok){zeroed=true;steps();}};
+$('btn_light').onclick=()=>cmd({cmd:'light',value:1},'light on');
+$('btn_light_off').onclick=()=>cmd({cmd:'light',value:0},'light off');
+$('led_b').oninput=e=>$('led_b_v').textContent=e.target.value+' %';
+$('led_b').onchange=e=>cmd({cmd:'set',key:'led_brightness',value:e.target.value/100},'brightness '+e.target.value+' %');
 $('btn_sweep').onclick=()=>cmd({cmd:'sweep',list:$('sw_list').value,fan:$('sw_fan').value/100,settle:$('sw_settle').value,samples:$('sw_samples').value,updown:$('sw_updown').checked?1:0},'sweep');
 $('btn_sweep_stop').onclick=()=>cmd({cmd:'stop'},'stop sweep');
 async function loadCfg(){const r=await fetch('/api/config');const c=await r.json();const g=$('cfg');g.innerHTML='';

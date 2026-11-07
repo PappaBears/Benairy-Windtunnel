@@ -39,6 +39,24 @@ private:
     int dt_, sck_;
 };
 
+// ---------------------------------------------------------------- WS2812B (bit-bang, RMT-free)
+static inline uint32_t cyc() { uint32_t c; asm volatile("rsr %0, ccount" : "=a"(c)); return c; }
+static void ws2812_show(int pin, const uint8_t *rgb, int n) {
+    const uint32_t F = ESP.getCpuFreqMHz();           // cycles per microsecond
+    const uint32_t T0H = (uint32_t)(0.35f * F), T1H = (uint32_t)(0.8f * F), TBIT = (uint32_t)(1.25f * F);
+    portDISABLE_INTERRUPTS();
+    for (int i = 0; i < n; ++i) {
+        uint8_t grb[3] = {rgb[3 * i + 1], rgb[3 * i], rgb[3 * i + 2]};
+        for (int b = 0; b < 3; ++b) for (int k = 7; k >= 0; --k) {
+            uint32_t th = (grb[b] >> k) & 1 ? T1H : T0H; uint32_t t0 = cyc();
+            GPIO.out_w1ts = (1u << pin); while (cyc() - t0 < th) {}
+            GPIO.out_w1tc = (1u << pin); while (cyc() - t0 < TBIT) {}
+        }
+    }
+    portENABLE_INTERRUPTS();
+    delayMicroseconds(80);                               // reset
+}
+
 // ---------------------------------------------------------------- tach
 static volatile uint32_t g_tach_pulses = 0;
 static void IRAM_ATTR tach_isr() { g_tach_pulses++; }
@@ -55,6 +73,7 @@ public:
         pinMode(PIN_ESTOP, INPUT_PULLUP);
         pinMode(PIN_STATUS_LED, OUTPUT);
         pinMode(PIN_FAN_TACH, INPUT_PULLUP);
+        pinMode(PIN_LED_STRIP, OUTPUT); digitalWrite(PIN_LED_STRIP, LOW);
         attachInterrupt(digitalPinToInterrupt(PIN_FAN_TACH), tach_isr, FALLING);
         lift.begin(); drag.begin();
         Wire.begin(PIN_I2C_SDA, PIN_I2C_SCL, 400000);
@@ -122,6 +141,7 @@ public:
 #endif
     }
     void set_led(bool on) override { digitalWrite(PIN_STATUS_LED, on); }
+    void set_leds(const uint8_t *rgb, int n) override { ws2812_show(PIN_LED_STRIP, rgb, n); }
     uint32_t millis() override { return ::millis(); }
     void log(const char *m) override { Serial.println(m); }
 };
@@ -162,6 +182,7 @@ static void handle_cmd() {
     else if (cmd == "zero_aoa") { r = ctl.cmd_zero_aoa(); save_config(); }
     else if (cmd == "stop") r = ctl.cmd_stop();
     else if (cmd == "clear_faults") r = ctl.cmd_clear_faults();
+    else if (cmd == "light") { r = ctl.cmd_light(server.arg("value").toInt() != 0); save_config(); }
     else if (cmd == "set") { r = ctl.set_config(server.arg("key").c_str(), server.arg("value").toFloat()); save_config(); }
     else if (cmd == "sweep") {
         SweepSpec s; s.aoas = parse_list(server.arg("list")); s.fan = server.arg("fan").toFloat();

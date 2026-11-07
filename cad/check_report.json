@@ -119,15 +119,15 @@
     },
     "test_section_2": {
       "watertight": true,
-      "volume_mm3": 126463.8031378213,
+      "volume_mm3": 129015.80368451728,
       "print_extents": [
         120.0,
         120.0,
         130.0
       ],
       "fits_bed": true,
-      "overhang_fraction": 0.0368,
-      "overhang_area_mm2": 3742.3
+      "overhang_fraction": 0.0373,
+      "overhang_area_mm2": 3940.3
     },
     "window_clip": {
       "watertight": true,
@@ -448,6 +448,14 @@
     "ref_as5600": {
       "watertight": true,
       "volume_mm3": 774.4001846313477
+    },
+    "ref_led_strip_R": {
+      "watertight": true,
+      "volume_mm3": 2444.002151489258
+    },
+    "ref_led_strip_L": {
+      "watertight": true,
+      "volume_mm3": 2444.002151489258
     }
   },
   "interference": [],

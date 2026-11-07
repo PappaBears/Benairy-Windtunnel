@@ -38,7 +38,7 @@ class SimController:
         self.cfg = {"m11": 1.0e-6, "m12": 0.0, "m21": 0.0, "m22": 1.0e-6, "kq": 1.067, "p_station_pa": 101325.0,
                     "aoa_zero_deg": 0.0, "aoa_sign": 1.0, "servo_gain": 1.0, "servo_offset_deg": 0.0,
                     "lift_limit_n": 1.5, "drag_limit_n": 0.8, "fan_slew_up": 0.25, "aoa_min": -30.0, "aoa_max": 30.0,
-                    "client_timeout_s": 10.0, "vbus_min_v": 10.5, "stall_rpm": 300.0, "stall_grace_s": 3.0}
+                    "client_timeout_s": 10.0, "vbus_min_v": 10.5, "stall_rpm": 300.0, "stall_grace_s": 3.0, "led_brightness": 0.4, "led_on": 1.0}
         self.state = "IDLE"; self.faults = set()
         self.fan_cmd = 0.0; self.fan_out = 0.0; self.aoa_cmd = 0.0
         self.raw0 = [0, 0]; self.dp0 = 0.0; self.tared = False; self.taring = None
@@ -74,6 +74,8 @@ class SimController:
             if c == "clear_faults":
                 if self.sim_estop: return 400, "stop loop is open"
                 self.faults.clear(); self.state = "IDLE"; self.fan_cmd = self.fan_out = 0.0; self.stall_t = 0; return 200, "ok"
+            if c == "light":
+                self.cfg["led_on"] = 1.0 if q.get("value", ["1"])[0] not in ("0", "false") else 0.0; return 200, "ok"
             if c == "set":
                 k = q.get("key", [""])[0]
                 if k not in self.cfg: return 400, "unknown key"
@@ -163,10 +165,30 @@ class SimController:
                 "rho": rho, "lift_n": mean("lift_n"), "lift_sd": sd("lift_n"), "drag_n": mean("drag_n"), "drag_sd": sd("drag_n"),
                 "lift_raw": int(mean("lift_raw")), "drag_raw": int(mean("drag_raw")), "n": n}
 
+    NUM_PIXELS = 24
+
+    def led_frame(self):
+        """Mirror of Controller::led_frame: hex colours for the 24 pixels."""
+        B = max(0.0, min(1.0, self.cfg["led_brightness"])) * (1.0 if self.cfg["led_on"] > 0.5 else 0.0)
+        ph = 0.5 + 0.5 * math.sin(self.t * 2 * math.pi)
+        out = []
+        for i in range(self.NUM_PIXELS):
+            if self.state == "FAULT": k = B * (1.0 if int(self.t * 4) % 2 else 0.15); c = (1.0, 0.1, 0.15)
+            elif self.taring: k = B * (0.3 + 0.7 * ph); c = (0.93, 0.96, 1.0)
+            elif self.state == "SWEEP":
+                prog = self.sweep_i / max(1, len(self.sweep_list))
+                if (i + 0.5) / self.NUM_PIXELS <= prog: k = B; c = (1.0, 0.78, 0.43)
+                else: k = B * 0.7; c = (0.4, 0.89, 1.0)
+            elif self.state == "RUNNING": k = B * (0.5 + 0.5 * self.fan_out); c = (0.4, 0.89, 1.0)
+            else: k = B * 0.35; c = (0.55, 0.7, 0.85)
+            out.append("%02x%02x%02x" % tuple(int(255 * min(1.0, v * k)) for v in c))
+        return "".join(out)
+
     def status_json(self):
         with self.lock:
             t = dict(self.tel) if self.tel else {"seq": 0, "state": self.state, "faults": ""}
-            t.update({"sweep_i": self.sweep_i if self.sweep else -1, "sweep_n": len(self.sweep_list) if self.sweep else 0, "sweep_points": len(self.sweep_pts)})
+            t.update({"sweep_i": self.sweep_i if self.sweep else -1, "sweep_n": len(self.sweep_list) if self.sweep else 0, "sweep_points": len(self.sweep_pts),
+                      "leds": self.led_frame()})
             t.pop("aoa_raw", None)
             return json.dumps(t)
 

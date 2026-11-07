@@ -25,6 +25,7 @@ public:
     virtual void set_fan(float duty01) = 0;          // 0..1
     virtual void set_servo_deg(float deg) = 0;        // -90..90 about centre
     virtual void set_led(bool on) = 0;
+    virtual void set_leds(const uint8_t *rgb, int n) = 0;   // n pixels, 3 bytes each (R,G,B)
     virtual uint32_t millis() = 0;
     virtual void log(const char *msg) = 0;
 };

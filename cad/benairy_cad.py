@@ -89,6 +89,8 @@ PARAMS = {
     "window_recess": 1.2, "window_margin": 5.0, "window_boss": 2.0, "window_boss_w": 18.0,
     "magnet_d": 6.0, "magnet_t": 2.0,      # user's magnets, change to match
     "tap_d": 1.2,
+    "led_bar_y": 20.0, "led_bar_x": (140.0, 240.0), "led_bar_w": 16.0, "led_bar_h": 4.0,
+    "led_slot_w": 10.6, "led_floor_t": 1.0,   # WS2812B 10 mm strip, 1 mm printed diffuser floor
     "probe_hole_d": 5.0,
     "model_x": 185.0,           # model station
     "slot_x_half": 15.0, "slot_y_half": 4.0,
@@ -439,9 +441,17 @@ def part_ts2():
     for gx in P["gb_peg_x"]:
         for gy in (-P["gb_peg_y"], P["gb_peg_y"]):
             s = K.cut(s, K.cyl(P["gb_peg_hole_d"] / 2, 20, (gx, gy, FLOOR_BOT - 10), "z"))
+    # LED light bars on the top wall: a housing with a slot for a 10 mm strip, 1 mm diffuser floor
+    lx0, lx1 = P["led_bar_x"]
+    top = h + P["wall"]
+    for sy in (-1, 1):
+        yc = sy * P["led_bar_y"]
+        s = K.fuse(s, K.box(lx1 - lx0, P["led_bar_w"], P["led_bar_h"], (lx0, yc - P["led_bar_w"] / 2, top)))
+        s = K.cut(s, K.box(lx1 - lx0 - 4.0, P["led_slot_w"], 20, (lx0 + 2.0, yc - P["led_slot_w"] / 2, h + P["led_floor_t"])))
+        s = K.cut(s, K.box(6.0, 6.0, 20, (lx1 - 4.0, yc - 3.0, top + 1.0)))       # wire exit notch
     # probe access hole on the top wall at the model station, and a static tap
     s = K.cut(s, K.cyl(P["probe_hole_d"] / 2, 20, (P["model_x"], 0, h - 10), "z"))
-    s = add_tap(s, P["model_x"], 25.0, h - 10, "z")
+    s = add_tap(s, P["model_x"], 38.0, h - 10, "z")
     return s
 
 
@@ -938,6 +948,12 @@ def ref_car():
     return K.box(L, W, H, (MX - L / 2, -W / 2, P["car_tray_z"] + P["tray_t"]))
 
 
+def ref_led_strip(sy):
+    lx0, lx1 = P["led_bar_x"]
+    yc = sy * P["led_bar_y"]
+    return K.box(lx1 - lx0 - 6.0, 10.0, 2.6, (lx0 + 3.0, yc - 5.0, P["ts_half"] + P["led_floor_t"] + 0.05))
+
+
 def ref_as5600():
     return K.box(22.0, 1.6, 22.0, (MX - 11.0, AS5600_Y[0], DRUM_Z - 11.0))
 
@@ -1003,6 +1019,8 @@ def build_all(verbose=True):
     add("ref_window_sheet_L", ref_window_sheet(-1), [], "1 mm clear sheet", reference=True)
     add("ref_car", ref_car(), [], "1:64 car envelope", reference=True)
     add("ref_as5600", ref_as5600(), [], "AS5600 board envelope", reference=True)
+    add("ref_led_strip_R", ref_led_strip(1), [], "WS2812B strip, 12 LEDs", reference=True)
+    add("ref_led_strip_L", ref_led_strip(-1), [], "WS2812B strip, 12 LEDs", reference=True)
     return PARTS
 
 

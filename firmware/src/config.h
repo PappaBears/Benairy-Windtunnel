@@ -14,6 +14,8 @@
 #define PIN_ESTOP        4    // normally closed loop to GND; open = stop (internal pull-up)
 #define PIN_VBUS_ADC     35   // 12 V bus through 47k/10k divider (12 V -> 2.1 V)
 #define PIN_STATUS_LED   2
+#define PIN_LED_STRIP    13   // WS2812B data through 330 ohm; two bars of 12 LEDs in series
+#define NUM_LEDS         24
 
 // ---- I2C addresses -----------------------------------------------------------
 #define ADDR_SDP810      0x25

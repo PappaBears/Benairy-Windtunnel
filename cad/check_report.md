@@ -11,7 +11,7 @@
 | contraction_1 | 1 | 220.0, 220.0, 100.0 | yes | yes | 3.6 % (6588 mm2) | Large end down. |
 | contraction_2 | 1 | 170.0, 170.0, 100.0 | yes | yes | 5.0 % (5973 mm2) | Large end down. |
 | test_section_1 | 1 | 120.0, 120.0, 120.0 | yes | yes | 3.0 % (3464 mm2) | Stand on a flange. Drill the 1.2 mm taps clean. |
-| test_section_2 | 1 | 120.0, 120.0, 130.0 | yes | yes | 3.7 % (3742 mm2) | Stand on a flange. Window openings need no support when printed vertically. |
+| test_section_2 | 1 | 120.0, 120.0, 130.0 | yes | yes | 3.7 % (3940 mm2) | Stand on a flange. Window openings need no support when printed vertically. |
 | window_clip | 2 | 118.0, 92.0, 3.0 | yes | yes | 0.0 % (0 mm2) | Print 2. Flat side down. |
 | diffuser | 1 | 130.0, 130.0, 150.0 | yes | yes | 2.5 % (3405 mm2) | Fan plate up. 4 hex nut traps face the duct. |
 | fan_guard | 1 | 130.0, 130.0, 44.0 | yes | yes | 11.3 % (7885 mm2) | Grille face down, open side up. No supports. |

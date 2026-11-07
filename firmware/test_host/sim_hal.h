@@ -29,6 +29,8 @@ public:
     void set_fan(float d) override { fan = d; }
     void set_servo_deg(float d) override { servo = d; }
     void set_led(bool on) override { led_on = on; }
+    std::vector<uint8_t> strip; int strip_writes = 0;
+    void set_leds(const uint8_t *rgb, int n) override { strip.assign(rgb, rgb + 3 * n); strip_writes++; }
     uint32_t millis() override { return t; }
     void log(const char *m) override { logs.push_back(m); }
     void advance(class Controller &c, int ms);

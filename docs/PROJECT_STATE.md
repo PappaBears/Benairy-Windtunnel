@@ -32,8 +32,8 @@ Operator: an aerospace test engineer who prints at home. Job: measure lift and d
 
 * CAD generated, checked, and rendered with the CadQuery backend. 38 printed parts plus reference envelopes. No interference between parts in any test configuration.
 * Firmware controller core passes 10 host tests. The ESP32 cross-compile was not run here (no toolchain allowed in the build environment).
-* Dashboard inspected at 1400 px and 390 px against the simulator, no console errors.
-* 9 automated tests pass: analysis, calibration fit, host firmware tests, simulated end-to-end run with fault paths.
+* Dashboard inspected at 1400 px and 390 px against the simulator, no console errors. Lighting controls and strip preview added.
+* 10 automated tests pass: analysis, calibration fit, host firmware tests, simulated end-to-end run with fault paths.
 * Example data and example analysis output in `data/examples`.
 
 ## Checkpoint

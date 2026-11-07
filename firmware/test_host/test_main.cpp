@@ -143,7 +143,27 @@ static void test_json() {
     CHECK(c.config_json().find("\"kq\":1.067") != std::string::npos);
 }
 
+static void test_lighting() {
+    printf("test_lighting\n");
+    SimHal h; Controller c(h); h.advance(c, 500);
+    CHECK(h.strip.size() == 3 * Controller::NUM_PIXELS && h.strip_writes > 5);
+    auto px = [&](int i) { return std::make_tuple(h.strip[3*i], h.strip[3*i+1], h.strip[3*i+2]); };
+    auto [r0, g0, b0] = px(0); CHECK(b0 > r0);                                   // idle: cool dim
+    c.cmd_fan(1.0f); h.advance(c, 5000);
+    auto [r1, g1, b1] = px(0); CHECK(b1 > b0 && b1 > 90 && g1 > 80 && r1 < b1 / 2);    // running: cyan, brighter (0.4 brightness cap)
+    h.estop = true; h.advance(c, 300);
+    int reds = 0; for (int i = 0; i < Controller::NUM_PIXELS; ++i) if (h.strip[3*i] > h.strip[3*i+2]) reds++;
+    CHECK(reds == Controller::NUM_PIXELS);                                        // fault: red
+    h.estop = false; c.cmd_clear_faults();
+    CHECK(c.cmd_light(false) == "ok"); h.advance(c, 100);
+    int sum = 0; for (auto v : h.strip) sum += v; CHECK(sum == 0);               // off
+    c.cmd_light(true); c.set_config("led_brightness", 1.0f); h.advance(c, 100);
+    sum = 0; for (auto v : h.strip) sum += v; CHECK(sum > 0);
+    CHECK(c.telemetry_json().find("\"leds\":\"") != std::string::npos);
+}
+
 int main() {
+    test_lighting();
     test_fan_slew(); test_estop_and_clear(); test_fan_stall(); test_overload(); test_client_timeout();
     test_sensor_stale(); test_tare_and_calibration(); test_aoa_zero_and_sign(); test_sweep(); test_json();
     printf(fails ? "\n%d CHECK(S) FAILED\n" : "\nALL CONTROLLER TESTS PASSED\n", fails);

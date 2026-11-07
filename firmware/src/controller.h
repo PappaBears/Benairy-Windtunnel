@@ -28,6 +28,8 @@ struct Config {
     float client_timeout_s = 10.0f;
     float vbus_min_v = 10.5f;
     float stall_rpm = 300.0f, stall_grace_s = 3.0f;
+    float led_brightness = 0.4f;  // 0..1, limits the strip current (24 LEDs at 0.4 cyan ~ 0.4 A)
+    float led_on = 1.0f;
 };
 
 struct Telemetry {
@@ -71,6 +73,9 @@ public:
     std::string cmd_sweep(const SweepSpec &s);
     std::string cmd_stop();
     std::string cmd_clear_faults();
+    std::string cmd_light(bool on);
+    static const int NUM_PIXELS = 24;
+    void led_frame(uint8_t *rgb) const;         // current strip colours, NUM_PIXELS * 3 bytes
     std::string set_config(const std::string &key, float value);
     void client_seen();                        // the dashboard polled us
     // data
@@ -119,6 +124,7 @@ private:
     struct Acc { double sl=0, sl2=0, sd=0, sd2=0, sq=0, sq2=0, sa=0, sa2=0, st=0, sr=0, rl=0, rd=0; uint32_t n=0, nq=0, na=0; } acc_;
     std::vector<SweepPoint> sweep_pts_;
     // ring buffer
+    uint32_t led_last_ms_ = 0;
     static const int RING = 200;
     Telemetry ring_[RING]; int ring_head_ = 0; int ring_count_ = 0;
 };

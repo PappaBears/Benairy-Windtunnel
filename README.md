@@ -19,7 +19,7 @@ Benairy is an open-circuit suction tunnel with a 100 x 100 mm test section, abou
 
 ## Finish scheme
 
-Print the duct, stands, and bay in graphite or dark grey PETG. Print the bellmouth quarters, fan cowl, window clips, electronics lid, drum, and struts in a cyan or teal accent colour. The two-tone split follows the renders. All flanges and covers have 7 mm chamfered corners, the fan sits inside a cowl with an integrated exit grille, and the covers close with magnets.
+Print the duct, stands, and bay in graphite or dark grey PETG. Print the bellmouth quarters, fan cowl, window clips, electronics lid, drum, and struts in a cyan or teal accent colour. The two-tone split follows the renders. All flanges and covers have 7 mm chamfered corners, the fan sits inside a cowl with an integrated exit grille, and the covers close with magnets. Two WS2812B light bars on top of the test section light the model through a thin printed diffuser. The colour follows the state: dim white idle, cyan running, amber progress fill during a sweep, white pulse while taring, red flash on a fault. Brightness and on/off are on the dashboard.
 
 ## Try it without hardware
 

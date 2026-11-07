@@ -20,9 +20,10 @@ All prices are in US dollars for one unit. The **Confirmed** column says how the
 | 10 | Silicone tubing, 2 mm ID, 2 m | 1 | 4.00 | 4.00 | Typical | Pressure taps to the sensor. |
 | 11 | Nylon tulle or window screen, 2 pieces 200 x 200 mm | 1 | 2.00 | 2.00 | Typical | Turbulence screens. |
 | 12 | Clear PET or acrylic sheet, 1 mm, 2 pieces 100 x 74 mm | 1 | 0.00 | 0.00 | — | Cut from packaging. Acrylic from a hardware store is about 4. |
-| 13 | M3 screws and nuts (about 60), M2 x 6 screws (12), M4 x 50 screws and nuts (4) | 1 | 6.00 | 6.00 | Typical | Skip if you own a hardware assortment. |
-| 14 | Music wire, 1.5 mm, 300 mm (joint pins) | 1 | 2.00 | 2.00 | Typical | Hobby shop. A paper clip also works. |
-| | **Total** | | | **98.35** | | Confirmed listings: 49.35. Typical: 49.00. |
+| 13 | M3 screws and nuts (about 60), M2 x 6 screws (12), M4 x 50 screws and nuts (4) | 1 | 4.00 | 4.00 | Typical | 6.00 for a new assortment. |
+| 14 | Music wire, 1.5 mm, 300 mm (joint pins) | 1 | 1.00 | 1.00 | Typical | Hobby shop. A paper clip also works. |
+| 15 | WS2812B LED strip, 60 LED/m, 5 V, 0.5 m (2 pieces of 12 LEDs used) | 1 | 4.00 | 4.00 | Typical | Light bars on the test section. 1 m rolls are about 6. |
+| | **Total** | | | **99.35** | | Confirmed listings: 49.35. Typical: 50.00. Hardware (line 13) counted at 4.00 for an owned assortment, 6.00 if bought. |
 
 ## Parts you already own
 

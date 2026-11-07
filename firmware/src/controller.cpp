@@ -99,6 +99,31 @@ std::string Controller::cmd_clear_faults() {
     return "ok";
 }
 
+std::string Controller::cmd_light(bool on) { cfg_.led_on = on ? 1.0f : 0.0f; return "ok"; }
+
+static void px(uint8_t *rgb, int i, float r, float g, float b, float k) {
+    rgb[3 * i] = (uint8_t)(255 * std::min(1.0f, r * k)); rgb[3 * i + 1] = (uint8_t)(255 * std::min(1.0f, g * k));
+    rgb[3 * i + 2] = (uint8_t)(255 * std::min(1.0f, b * k));
+}
+
+void Controller::led_frame(uint8_t *rgb) const {
+    // Colours follow the Schreiber AI palette: cyan running, amber progress, red fault.
+    float B = std::max(0.0f, std::min(1.0f, cfg_.led_brightness)) * (cfg_.led_on > 0.5f ? 1.0f : 0.0f);
+    uint32_t t = hal_.millis();
+    float phase = 0.5f + 0.5f * std::sin(t / 1000.0f * 2.0f * 3.14159f);     // 1 Hz breathing
+    for (int i = 0; i < NUM_PIXELS; ++i) {
+        if (state_ == State::FAULT) { float f = ((t / 250) % 2) ? 1.0f : 0.15f; px(rgb, i, 1.0f, 0.1f, 0.15f, B * f); }
+        else if (taring_) px(rgb, i, 0.93f, 0.96f, 1.0f, B * (0.3f + 0.7f * phase));
+        else if (state_ == State::SWEEP) {
+            float prog = sweep_list_.empty() ? 0 : (float)sweep_i_ / sweep_list_.size();
+            bool filled = (i + 0.5f) / NUM_PIXELS <= prog;
+            if (filled) px(rgb, i, 1.0f, 0.78f, 0.43f, B); else px(rgb, i, 0.4f, 0.89f, 1.0f, B * 0.7f);
+        }
+        else if (state_ == State::RUNNING) px(rgb, i, 0.4f, 0.89f, 1.0f, B * (0.5f + 0.5f * fan_out_));
+        else px(rgb, i, 0.55f, 0.7f, 0.85f, B * 0.35f);                        // idle: dim slate white
+    }
+}
+
 std::string Controller::set_config(const std::string &k, float v) {
     struct { const char *n; float *p; } T[] = {
         {"m11", &cfg_.m11}, {"m12", &cfg_.m12}, {"m21", &cfg_.m21}, {"m22", &cfg_.m22},
@@ -106,7 +131,8 @@ std::string Controller::set_config(const std::string &k, float v) {
         {"aoa_sign", &cfg_.aoa_sign}, {"servo_gain", &cfg_.servo_gain}, {"servo_offset_deg", &cfg_.servo_offset_deg},
         {"lift_limit_n", &cfg_.lift_limit_n}, {"drag_limit_n", &cfg_.drag_limit_n}, {"fan_slew_up", &cfg_.fan_slew_up},
         {"aoa_min", &cfg_.aoa_min}, {"aoa_max", &cfg_.aoa_max}, {"client_timeout_s", &cfg_.client_timeout_s},
-        {"vbus_min_v", &cfg_.vbus_min_v}, {"stall_rpm", &cfg_.stall_rpm}, {"stall_grace_s", &cfg_.stall_grace_s}};
+        {"vbus_min_v", &cfg_.vbus_min_v}, {"stall_rpm", &cfg_.stall_rpm}, {"stall_grace_s", &cfg_.stall_grace_s},
+        {"led_brightness", &cfg_.led_brightness}, {"led_on", &cfg_.led_on}};
     for (auto &t : T) if (k == t.n) { *t.p = v; return "ok"; }
     return "unknown key";
 }
@@ -230,6 +256,10 @@ void Controller::tick() {
     if (state_ != State::FAULT) { update_fan(dt); sweep_step(dt); }
     tel_.state = state_;
     hal_.set_led(state_ == State::FAULT ? ((now / 150) % 2) : (fan_out_ > 0.02f));
+    if (now - led_last_ms_ >= 40) {                 // 25 Hz strip update
+        led_last_ms_ = now;
+        uint8_t rgb[NUM_PIXELS * 3]; led_frame(rgb); hal_.set_leds(rgb, NUM_PIXELS);
+    }
 }
 
 // ---- serialisation -----------------------------------------------------------
@@ -249,8 +279,11 @@ std::string Controller::telemetry_json() const {
     jf(s, "dp_pa", t.dp_pa); jf(s, "q_pa", t.q_pa); jf(s, "v_ms", t.v_ms); jf(s, "temp_c", t.temp_c); jf(s, "rho", t.rho);
     jf(s, "vbus", t.vbus); jf(s, "tared", t.tared ? 1 : 0);
     jf(s, "sweep_i", sweep_done_ ? -1 : sweep_i_); jf(s, "sweep_n", sweep_done_ ? 0 : (double)sweep_list_.size());
-    jf(s, "sweep_points", (double)sweep_pts_.size(), true);
-    return s + "}";
+    jf(s, "sweep_points", (double)sweep_pts_.size());
+    uint8_t rgb[NUM_PIXELS * 3]; led_frame(rgb); s += "\"leds\":\"";
+    char hx[8]; for (int i = 0; i < NUM_PIXELS; ++i) { snprintf(hx, sizeof hx, "%02x%02x%02x", rgb[3*i], rgb[3*i+1], rgb[3*i+2]); s += hx; }
+    s += "\"}";
+    return s;
 }
 
 std::string Controller::config_json() const {
@@ -260,7 +293,8 @@ std::string Controller::config_json() const {
     jf(s, "servo_gain", c.servo_gain); jf(s, "servo_offset_deg", c.servo_offset_deg);
     jf(s, "lift_limit_n", c.lift_limit_n); jf(s, "drag_limit_n", c.drag_limit_n); jf(s, "fan_slew_up", c.fan_slew_up);
     jf(s, "aoa_min", c.aoa_min); jf(s, "aoa_max", c.aoa_max); jf(s, "client_timeout_s", c.client_timeout_s);
-    jf(s, "vbus_min_v", c.vbus_min_v); jf(s, "stall_rpm", c.stall_rpm); jf(s, "stall_grace_s", c.stall_grace_s, true);
+    jf(s, "vbus_min_v", c.vbus_min_v); jf(s, "stall_rpm", c.stall_rpm); jf(s, "stall_grace_s", c.stall_grace_s);
+    jf(s, "led_brightness", c.led_brightness); jf(s, "led_on", c.led_on, true);
     return s + "}";
 }
 
