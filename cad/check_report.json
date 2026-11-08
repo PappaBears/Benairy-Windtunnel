@@ -287,11 +287,11 @@
     },
     "ground_board": {
       "watertight": true,
-      "volume_mm3": 23695.344976210366,
+      "volume_mm3": 23582.402459018882,
       "print_extents": [
         90.0,
         99.0,
-        11.5
+        10.5
       ],
       "fits_bed": true,
       "overhang_fraction": 0.0054,

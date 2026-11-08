@@ -110,7 +110,7 @@
     "pin_d": 1.6,
     "wing_z": 3.0,
     "car_tray_z": -37.0,
-    "ground_board_top": -38.5,
+    "ground_board_top": -39.5,
     "ground_board_t": 3.0,
     "ground_board_x": [
       140.0,
@@ -904,9 +904,9 @@
         -50.0,
         230.0,
         49.5,
-        -38.5
+        -39.5
       ],
-      "volume_mm3": 23696.3,
+      "volume_mm3": 23583.2,
       "valid": true,
       "print_bbox": [
         -45.0,
@@ -914,12 +914,12 @@
         0.0,
         45.0,
         49.5,
-        11.5
+        10.5
       ],
       "print_size": [
         90.0,
         99.0,
-        11.5
+        10.5
       ]
     },
     "stand_settling": {

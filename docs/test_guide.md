@@ -102,7 +102,7 @@ What to report: CD with k = 2 uncertainty. The repeat scatter tells you the repe
 
 ## Experiment 6: ride height and rake
 
-Model: one car. Pitch the tray by -3, 0, and +3 degrees with the angle command. The rear wheels must stay above the ground board.
+Model: one car. Set `aoa_min` to -3 and `aoa_max` to 3 in the dashboard settings first: the tray ends touch the ground board beyond 3 degrees (see `cad/sweep_report.md`). Pitch the tray by -3, 0, and +3 degrees with the angle command.
 
 What to expect: nose-down rake lowers lift and often lowers drag a little. The effect is small at this scale. This experiment shows the resolution limit of the balance: compare the differences with the k = 2 bars.
 

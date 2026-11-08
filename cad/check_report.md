@@ -25,7 +25,7 @@
 | wing_naca4412 | 1 | 35.1, 80.0, 12.0 | yes | yes | 31.9 % (2059 mm2) | Upside down, pylon up. Supports in the socket only. |
 | wing_flat_plate | 1 | 34.0, 80.0, 9.5 | yes | yes | 1.0 % (66 mm2) | Upside down, pylon up. |
 | car_tray | 1 | 75.0, 32.0, 13.0 | yes | yes | 35.9 % (2121 mm2) | Flat. Supports under the neck. |
-| ground_board | 1 | 90.0, 99.0, 11.5 | yes | yes | 0.5 % (101 mm2) | Upside down (pegs up). |
+| ground_board | 1 | 90.0, 99.0, 10.5 | yes | yes | 0.5 % (101 mm2) | Upside down (pegs up). |
 | stand_settling | 1 | 40.0, 224.0, 42.0 | yes | yes | 31.0 % (8560 mm2) | Flat. |
 | stand_test_section | 1 | 40.0, 124.0, 92.0 | yes | yes | 16.2 % (4560 mm2) | Flat. |
 | stand_fan | 1 | 30.0, 148.0, 75.0 | yes | yes | 19.1 % (3953 mm2) | Flat. |

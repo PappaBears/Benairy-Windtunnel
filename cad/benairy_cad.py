@@ -119,7 +119,7 @@ PARAMS = {
     "pin_d": 1.6,
     "wing_z": 3.0,              # chord line height of the wing (model centre)
     "car_tray_z": -37.0,        # underside of the car tray
-    "ground_board_top": -38.5, "ground_board_t": 3.0,
+    "ground_board_top": -39.5, "ground_board_t": 3.0,   # 2.5 mm under the tray: allows +-3 deg rake
     "ground_board_x": (140.0, 230.0), "ground_board_slot": (36.0, 10.0),
     "ground_board_bevel": 12.0,
     # ---- models
